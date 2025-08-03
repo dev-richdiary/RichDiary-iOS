@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6CA3881F2E3F926E00DB2680 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA3881E2E3F926E00DB2680 /* RxSwift */; };
+		6CA388222E3F929600DB2680 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA388212E3F929600DB2680 /* SnapKit */; };
+		6CA388252E3F92BB00DB2680 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA388242E3F92BB00DB2680 /* Then */; };
+		6CA388372E3F9E5A00DB2680 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA388362E3F9E5A00DB2680 /* RealmSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6CA86AF82E32611B00841548 /* RichDiary-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RichDiary-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -14,7 +21,7 @@
 		6CA86B0A2E32611C00841548 /* Exceptions for "RichDiary-iOS" folder in "RichDiary-iOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resource/Info.plist,
 			);
 			target = 6CA86AF72E32611B00841548 /* RichDiary-iOS */;
 		};
@@ -36,6 +43,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CA388372E3F9E5A00DB2680 /* RealmSwift in Frameworks */,
+				6CA3881F2E3F926E00DB2680 /* RxSwift in Frameworks */,
+				6CA388252E3F92BB00DB2680 /* Then in Frameworks */,
+				6CA388222E3F929600DB2680 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +89,10 @@
 			);
 			name = "RichDiary-iOS";
 			packageProductDependencies = (
+				6CA3881E2E3F926E00DB2680 /* RxSwift */,
+				6CA388212E3F929600DB2680 /* SnapKit */,
+				6CA388242E3F92BB00DB2680 /* Then */,
+				6CA388362E3F9E5A00DB2680 /* RealmSwift */,
 			);
 			productName = "RichDiary-iOS";
 			productReference = 6CA86AF82E32611B00841548 /* RichDiary-iOS.app */;
@@ -107,6 +122,12 @@
 			);
 			mainGroup = 6CA86AEF2E32611B00841548;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6CA3881D2E3F926E00DB2680 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				6CA388202E3F929600DB2680 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				6CA388232E3F92BB00DB2680 /* XCRemoteSwiftPackageReference "Then" */,
+				6CA388352E3F9E5A00DB2680 /* XCRemoteSwiftPackageReference "realm-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CA86AF92E32611B00841548 /* Products */;
 			projectDirPath = "";
@@ -147,12 +168,13 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3RFJ9FQWHA;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "RichDiary-iOS/Info.plist";
+				INFOPLIST_FILE = "RichDiary-iOS/Resource/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = RichDiary;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -175,12 +197,13 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3RFJ9FQWHA;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "RichDiary-iOS/Info.plist";
+				INFOPLIST_FILE = "RichDiary-iOS/Resource/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = RichDiary;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -337,6 +360,64 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6CA3881D2E3F926E00DB2680 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+		6CA388202E3F929600DB2680 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+		6CA388232E3F92BB00DB2680 /* XCRemoteSwiftPackageReference "Then" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/devxoul/Then";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		6CA388352E3F9E5A00DB2680 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 20.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6CA3881E2E3F926E00DB2680 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CA3881D2E3F926E00DB2680 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		6CA388212E3F929600DB2680 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CA388202E3F929600DB2680 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		6CA388242E3F92BB00DB2680 /* Then */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CA388232E3F92BB00DB2680 /* XCRemoteSwiftPackageReference "Then" */;
+			productName = Then;
+		};
+		6CA388362E3F9E5A00DB2680 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CA388352E3F9E5A00DB2680 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6CA86AF02E32611B00841548 /* Project object */;
 }
