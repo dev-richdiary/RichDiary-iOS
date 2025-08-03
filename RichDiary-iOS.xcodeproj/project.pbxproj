@@ -10,6 +10,7 @@
 		6CA3881F2E3F926E00DB2680 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA3881E2E3F926E00DB2680 /* RxSwift */; };
 		6CA388222E3F929600DB2680 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA388212E3F929600DB2680 /* SnapKit */; };
 		6CA388252E3F92BB00DB2680 /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA388242E3F92BB00DB2680 /* Then */; };
+		6CA388282E3F949200DB2680 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA388272E3F949200DB2680 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CA388282E3F949200DB2680 /* RealmSwift in Frameworks */,
 				6CA3881F2E3F926E00DB2680 /* RxSwift in Frameworks */,
 				6CA388252E3F92BB00DB2680 /* Then in Frameworks */,
 				6CA388222E3F929600DB2680 /* SnapKit in Frameworks */,
@@ -90,6 +92,7 @@
 				6CA3881E2E3F926E00DB2680 /* RxSwift */,
 				6CA388212E3F929600DB2680 /* SnapKit */,
 				6CA388242E3F92BB00DB2680 /* Then */,
+				6CA388272E3F949200DB2680 /* RealmSwift */,
 			);
 			productName = "RichDiary-iOS";
 			productReference = 6CA86AF82E32611B00841548 /* RichDiary-iOS.app */;
@@ -123,6 +126,7 @@
 				6CA3881D2E3F926E00DB2680 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				6CA388202E3F929600DB2680 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				6CA388232E3F92BB00DB2680 /* XCRemoteSwiftPackageReference "Then" */,
+				6CA388262E3F949200DB2680 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CA86AF92E32611B00841548 /* Products */;
@@ -378,6 +382,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		6CA388262E3F949200DB2680 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -395,6 +407,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6CA388232E3F92BB00DB2680 /* XCRemoteSwiftPackageReference "Then" */;
 			productName = Then;
+		};
+		6CA388272E3F949200DB2680 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CA388262E3F949200DB2680 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
