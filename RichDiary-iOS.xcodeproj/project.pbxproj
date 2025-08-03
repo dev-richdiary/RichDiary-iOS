@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6CA3881F2E3F926E00DB2680 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6CA3881E2E3F926E00DB2680 /* RxSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6CA86AF82E32611B00841548 /* RichDiary-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RichDiary-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CA3881F2E3F926E00DB2680 /* RxSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = "RichDiary-iOS";
 			packageProductDependencies = (
+				6CA3881E2E3F926E00DB2680 /* RxSwift */,
 			);
 			productName = "RichDiary-iOS";
 			productReference = 6CA86AF82E32611B00841548 /* RichDiary-iOS.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 6CA86AEF2E32611B00841548;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6CA3881D2E3F926E00DB2680 /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CA86AF92E32611B00841548 /* Products */;
 			projectDirPath = "";
@@ -335,6 +344,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6CA3881D2E3F926E00DB2680 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6CA3881E2E3F926E00DB2680 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CA3881D2E3F926E00DB2680 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6CA86AF02E32611B00841548 /* Project object */;
 }
