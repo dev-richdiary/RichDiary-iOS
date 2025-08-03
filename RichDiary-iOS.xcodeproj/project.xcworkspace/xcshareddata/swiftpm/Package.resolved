@@ -1,5 +1,5 @@
 {
-  "originHash" : "cd3d641b9769728c2b0ab2a3ddd1ac348a24916b0d2c4757638218ed952a9c9b",
+  "originHash" : "308d190d6e4a2b47a4a1ef43428446d2d4cd40fd90457d8703ae7b9c8605734a",
   "pins" : [
     {
       "identity" : "rxswift",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
         "version" : "5.7.1"
+      }
+    },
+    {
+      "identity" : "then",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/devxoul/Then",
+      "state" : {
+        "revision" : "d41ef523faef0f911369f79c0b96815d9dbb6d7a",
+        "version" : "3.0.0"
       }
     }
   ],
