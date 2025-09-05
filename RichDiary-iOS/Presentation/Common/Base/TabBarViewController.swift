@@ -20,9 +20,10 @@ class TabBarViewController: UITabBarController {
         homeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         
         let calendarVC = CalendarViewController()
-        calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar.fill"), selectedImage: UIImage(systemName: "calendar"))
+        calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar"), selectedImage: UIImage(systemName: "calendar"))
         
         viewControllers = [homeVC, calendarVC]
+        self.tabBar.tintColor = .black
     }
 }
 
