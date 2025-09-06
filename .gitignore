@@ -105,3 +105,4 @@ Config.xcconfig
 */*.xcconfig
 *.xcodeproj
 Derived/
+.DS_Store
