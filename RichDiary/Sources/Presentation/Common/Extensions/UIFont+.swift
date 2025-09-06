@@ -35,6 +35,9 @@ enum RichFontStyle {
     case caption3
     case caption4
     case caption5
+    
+    // custom
+    case custom(fontWeight: FontWeight, size: CGFloat)
 }
 
 extension UIFont {
@@ -68,6 +71,8 @@ extension UIFont {
             return UIFont(name: FontWeight.bold.rawValue, size: 10)!
         case .caption5:
             return UIFont(name: FontWeight.regular.rawValue, size: 11)!
+        case .custom(let fontWeight, let size):
+            return UIFont(name: fontWeight.rawValue, size: size)!
         }
     }
 }

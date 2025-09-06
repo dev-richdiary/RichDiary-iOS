@@ -103,3 +103,5 @@ iOSInjectionProject/
 ###Others###
 Config.xcconfig
 */*.xcconfig
+*.xcodeproj
+Derived/
