@@ -18,12 +18,17 @@ class TabBarViewController: UITabBarController {
     private func setTabBar() {
         let homeVC = HomeViewController()
         homeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
+        homeVC.view.backgroundColor = .gray11
         
         let calendarVC = CalendarViewController()
         calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar"), selectedImage: UIImage(systemName: "calendar"))
+        calendarVC.view.backgroundColor = .gray11
+        
+        self.tabBar.tintColor = .black
+        self.tabBar.unselectedItemTintColor = .lightGray
+        self.tabBar.backgroundColor = .red
         
         viewControllers = [homeVC, calendarVC]
-        self.tabBar.tintColor = .black
     }
 }
 

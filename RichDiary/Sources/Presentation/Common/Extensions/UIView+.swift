@@ -23,4 +23,10 @@ extension UIView {
         }
         return nil
     }
+    
+    func applyPillCornerRadius() {
+        layoutIfNeeded()
+        self.layer.cornerRadius = self.bounds.height / 2
+        self.clipsToBounds = true
+    }
 }
