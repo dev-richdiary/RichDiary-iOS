@@ -54,18 +54,21 @@ final class HomeSummaryView: BaseUIView {
             $0.setBackgroundImage(UIImage(systemName: "arrowtriangle.left.fill"), for: .normal)
             $0.tintColor = .black
             $0.addTarget(self, action: #selector(onTapPreviousMonthButton), for: .touchUpInside)
+            $0.accessibilityLabel = "이전 달"
         }
         
         nextMonthButton.do {
             $0.setBackgroundImage(UIImage(systemName: "arrowtriangle.right.fill"), for: .normal)
             $0.tintColor = .black
             $0.addTarget(self, action: #selector(onTapNextMonthButton), for: .touchUpInside)
+            $0.accessibilityLabel = "다음 달"
         }
         
         calendarButton.do {
             $0.setBackgroundImage(UIImage(systemName: "calendar.circle.fill"), for: .normal)
             $0.tintColor = .black
             $0.addTarget(self, action: #selector(onTapCalendarButton), for: .touchUpInside)
+            $0.accessibilityLabel = "달력 열기"
         }
         
         expenseLabel.do {

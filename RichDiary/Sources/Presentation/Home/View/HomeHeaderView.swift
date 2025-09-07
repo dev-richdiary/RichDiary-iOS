@@ -35,12 +35,14 @@ final class HomeHeaderView: BaseUIView {
             $0.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
             $0.tintColor = .white
             $0.addTarget(self, action: #selector(onTapNoticeButton), for: .touchUpInside)
+            $0.accessibilityLabel = "알림"
         }
 
         helpButton.do {
             $0.setBackgroundImage(UIImage(systemName: "questionmark.circle"), for: .normal)
             $0.tintColor = .white
             $0.addTarget(self, action: #selector(onTapHelpButton), for: .touchUpInside)
+            $0.accessibilityLabel = "도움말"
         }
     }
     
