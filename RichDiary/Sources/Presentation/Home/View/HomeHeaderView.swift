@@ -63,8 +63,8 @@ final class HomeHeaderView: BaseUIView {
         }
     }
     
-    
-    //MARK: - Button Event
+
+    //MARK: - Private Func
 
     @objc private func onTapNoticeButton() {
         print("알림 버튼 클릭")

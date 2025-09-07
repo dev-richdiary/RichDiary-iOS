@@ -16,27 +16,42 @@ final class HomeViewController: BaseUIViewController {
     private let scrollview = UIScrollView()
     private let contentView = UIView()
     private let headerView = HomeHeaderView()
+    private let summaryView = HomeSummaryView()
+    private let seperator = UIView()
     
     
     //MARK: - Func
     
     override func setUI() {
-        self.view.backgroundColor = .gray11
-        self.view.addSubview(scrollview)
+        self.view.addSubviews(headerView, scrollview)
         scrollview.addSubview(contentView)
-        contentView.addSubviews(headerView)
+        contentView.addSubviews(summaryView, seperator)
     }
     
     override func setStyle() {
         scrollview.do {
             $0.showsVerticalScrollIndicator = false
+            $0.backgroundColor = .white
+            $0.layer.cornerRadius = 40
+            $0.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
         }
         
+        seperator.do {
+            $0.backgroundColor = .gray6
+        }
     }
     
     override func setLayout() {
+        headerView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(52)
+        }
+        
         scrollview.snp.makeConstraints {
-            $0.edges.equalTo(view.safeAreaLayoutGuide.snp.edges)
+            $0.top.equalTo(headerView.snp.bottom).offset(25)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
         contentView.snp.makeConstraints {
@@ -46,15 +61,20 @@ final class HomeViewController: BaseUIViewController {
             $0.height.equalTo(view.frame.height + 100)
         }
         
-        headerView.snp.makeConstraints {
+        summaryView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(52)
-            
+            $0.height.equalTo(250)
+        }
+        
+        seperator.snp.makeConstraints {
+            $0.top.equalTo(summaryView.snp.bottom)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(10)
         }
     }
 }
 
 #Preview {
-    HomeViewController()
+    TabBarViewController()
 }
