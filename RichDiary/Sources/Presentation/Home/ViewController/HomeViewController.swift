@@ -37,7 +37,7 @@ final class HomeViewController: BaseUIViewController {
         }
         
         seperator.do {
-            $0.backgroundColor = .gray6
+            $0.backgroundColor = .gray5
         }
     }
     
