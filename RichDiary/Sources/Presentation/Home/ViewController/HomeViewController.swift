@@ -17,7 +17,7 @@ final class HomeViewController: BaseUIViewController {
     private let contentView = UIView()
     private let headerView = HomeHeaderView()
     private let summaryView = HomeSummaryView()
-    private let seperator = UIView()
+    private let separator = UIView()
     
     
     //MARK: - Func
@@ -25,7 +25,7 @@ final class HomeViewController: BaseUIViewController {
     override func setUI() {
         self.view.addSubviews(headerView, scrollview)
         scrollview.addSubview(contentView)
-        contentView.addSubviews(summaryView, seperator)
+        contentView.addSubviews(summaryView, separator)
     }
     
     override func setStyle() {
@@ -36,7 +36,7 @@ final class HomeViewController: BaseUIViewController {
             $0.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
         }
         
-        seperator.do {
+        separator.do {
             $0.backgroundColor = .gray5
         }
     }
@@ -67,7 +67,7 @@ final class HomeViewController: BaseUIViewController {
             $0.height.equalTo(250)
         }
         
-        seperator.snp.makeConstraints {
+        separator.snp.makeConstraints {
             $0.top.equalTo(summaryView.snp.bottom)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(10)
