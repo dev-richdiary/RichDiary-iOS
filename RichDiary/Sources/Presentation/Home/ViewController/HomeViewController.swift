@@ -21,6 +21,7 @@ final class HomeViewController: BaseUIViewController {
     //MARK: - Func
     
     override func setUI() {
+        self.view.backgroundColor = .gray11
         self.view.addSubview(scrollview)
         scrollview.addSubview(contentView)
         contentView.addSubviews(headerView)
@@ -52,4 +53,8 @@ final class HomeViewController: BaseUIViewController {
             
         }
     }
+}
+
+#Preview {
+    HomeViewController()
 }
