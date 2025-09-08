@@ -8,6 +8,7 @@
 import UIKit
 
 import SnapKit
+import Then
 
 final class HomeViewController: BaseUIViewController {
     
@@ -18,6 +19,19 @@ final class HomeViewController: BaseUIViewController {
     private let headerView = HomeHeaderView()
     private let summaryView = HomeSummaryView()
     private let separator = UIView()
+    private let diaryStackView = UIStackView()
+    
+    
+    // MARK: - Life Cycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // 예시 데이터를 생성합니다. 실제 앱에서는 API 통신 등으로 데이터를 가져옵니다.
+        let sampleData = DiaryModel.dummy()
+        
+        setupDiaryTiles(with: sampleData)
+    }
     
     
     //MARK: - Func
@@ -25,7 +39,7 @@ final class HomeViewController: BaseUIViewController {
     override func setUI() {
         self.view.addSubviews(headerView, scrollview)
         scrollview.addSubview(contentView)
-        contentView.addSubviews(summaryView, separator)
+        contentView.addSubviews(summaryView, separator, diaryStackView)
     }
     
     override func setStyle() {
@@ -38,6 +52,12 @@ final class HomeViewController: BaseUIViewController {
         
         separator.do {
             $0.backgroundColor = .gray5
+        }
+        
+        diaryStackView.do {
+            $0.axis = .vertical
+            $0.spacing = 0
+            $0.distribution = .fill
         }
     }
     
@@ -58,7 +78,6 @@ final class HomeViewController: BaseUIViewController {
             $0.edges.equalToSuperview()
             $0.width.equalToSuperview()
             $0.bottom.equalToSuperview()
-            $0.height.equalTo(view.frame.height + 100)
         }
         
         summaryView.snp.makeConstraints {
@@ -71,6 +90,34 @@ final class HomeViewController: BaseUIViewController {
             $0.top.equalTo(summaryView.snp.bottom)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(10)
+        }
+        
+        diaryStackView.snp.makeConstraints {
+            $0.top.equalTo(separator.snp.bottom).offset(10)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+    }
+    
+}
+
+
+//MARK: - Private Func
+
+extension HomeViewController {
+    private func setupDiaryTiles(with models: [DiaryModel]) {
+        // 기존에 추가된 뷰가 있다면 모두 제거 (데이터 업데이트 시 중복 방지)
+        diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        models.forEach { model in
+            let tile = DiaryTile()
+            tile.configure(with: model)
+            
+            tile.snp.makeConstraints {
+                $0.height.equalTo(72)
+            }
+            
+            diaryStackView.addArrangedSubview(tile)
         }
     }
 }
