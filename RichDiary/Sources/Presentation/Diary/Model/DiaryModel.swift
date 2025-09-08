@@ -65,36 +65,21 @@ enum DiaryCategoryType {
     
     var description: String {
         switch self {
-        case .food:
-            "식비"
-        case .car:
-            "교통/차량"
-        case .culture:
-            "문화생활"
-        case .mart:
-            "마트/편의점"
-        case .shopping:
-            "패션/미용"
-        case .life:
-            "생활용품"
-        case .house:
-            "주거/통신"
-        case .hospital:
-            "건강"
-        case .education:
-            "교육"
-        case .event:
-            "경조사/회비"
-        case .family:
-            "가족"
-        case .saving:
-            "저축성 지출"
-        case .tax:
-            "세금"
-        case .pet:
-            "반려동물"
-        case .etc:
-            "기타"
+        case .food: return "식비"
+        case .car: return "교통/차량"
+        case .culture: return "문화생활"
+        case .mart: return "마트/편의점"
+        case .shopping: return "패션/미용"
+        case .life: return "생활용품"
+        case .house: return "주거/통신"
+        case .hospital: return "건강"
+        case .education: return "교육"
+        case .event: return "경조사/회비"
+        case .family: return "가족"
+        case .saving: return "저축성 지출"
+        case .tax: return "세금"
+        case .pet: return "반려동물"
+        case .etc: return "기타"
         }
     }
 }
@@ -108,7 +93,7 @@ final class DiaryModel {
     let memo: String
     let type: ExpenseType
     let diaryType: DiaryType
-
+    
     init(date: Date, money: Int, category: DiaryCategoryType, payment: PaymentType, description: String, memo: String, type: ExpenseType, diaryType: DiaryType) {
         self.date = date
         self.money = money

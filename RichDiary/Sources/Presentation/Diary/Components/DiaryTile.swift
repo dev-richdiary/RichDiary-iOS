@@ -88,7 +88,7 @@ final class DiaryTile: BaseUIView {
 extension DiaryTile {
     private func bindData() {
         guard let model = model else { return }
-        categoryImageView.image = UIImage(named: "icon_\(model.category)")
+        categoryImageView.image = UIImage(named: "icon_\(model.category)") ?? UIImage(resource: .iconEtc)
         
         if model.type == .C {
             categoryImageView.backgroundColor = .primaryRed

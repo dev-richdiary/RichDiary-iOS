@@ -23,7 +23,7 @@ final class HomeViewController: BaseUIViewController {
     
     
     // MARK: - Life Cycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -77,7 +77,6 @@ final class HomeViewController: BaseUIViewController {
         contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
             $0.width.equalToSuperview()
-            $0.bottom.equalToSuperview()
         }
         
         summaryView.snp.makeConstraints {
@@ -107,7 +106,10 @@ final class HomeViewController: BaseUIViewController {
 extension HomeViewController {
     private func setupDiaryTiles(with models: [DiaryModel]) {
         // 기존에 추가된 뷰가 있다면 모두 제거 (데이터 업데이트 시 중복 방지)
-        diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        diaryStackView.arrangedSubviews.forEach {
+            diaryStackView.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
         
         models.forEach { model in
             let tile = DiaryTile()
