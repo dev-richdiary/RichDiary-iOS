@@ -24,9 +24,9 @@ class TabBarViewController: UITabBarController {
         calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar"), selectedImage: UIImage(systemName: "calendar"))
         calendarVC.view.backgroundColor = .gray11
         
-        self.tabBar.tintColor = .black
+        self.tabBar.tintColor = .gray11
         self.tabBar.unselectedItemTintColor = .lightGray
-        self.tabBar.backgroundColor = .red
+        self.tabBar.backgroundColor = .gray2
         
         viewControllers = [homeVC, calendarVC]
     }
