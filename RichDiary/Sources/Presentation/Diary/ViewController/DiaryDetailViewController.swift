@@ -135,7 +135,7 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.setTitleColor(.white, for: .normal)
             $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
             $0.backgroundColor = .primaryRed
-            $0.layer.cornerRadius = 8
+            $0.layer.cornerRadius = 12
             $0.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
         }
 
@@ -144,7 +144,7 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.setTitleColor(.white, for: .normal)
             $0.backgroundColor = .gray11
             $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
-            $0.layer.cornerRadius = 8
+            $0.layer.cornerRadius = 12
             $0.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
         }
     }
