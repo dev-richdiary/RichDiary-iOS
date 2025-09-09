@@ -14,6 +14,8 @@ final class DiaryTile: BaseUIView {
 
     //MARK: - Properties
 
+    var onTap: (() -> Void)?
+    
     private var model: DiaryModel?
     
     
@@ -24,6 +26,15 @@ final class DiaryTile: BaseUIView {
     private let categoryLabel = UILabel()
     private let moneyLabel = UILabel()
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setGesture()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setGesture()
+    }
     
     //MARK: - Func
 
@@ -44,10 +55,14 @@ final class DiaryTile: BaseUIView {
         
         descriptionLabel.do {
             $0.textColor = .black
+            $0.numberOfLines = 1
+            $0.lineBreakMode = .byTruncatingTail
+            $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         }
 
         moneyLabel.do {
             $0.textColor = .black
+            $0.setContentCompressionResistancePriority(.required, for: .horizontal)
         }
 
     }
@@ -62,6 +77,7 @@ final class DiaryTile: BaseUIView {
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(categoryImageView.snp.top).offset(2)
             $0.left.equalTo(categoryImageView.snp.right).offset(12)
+            $0.right.lessThanOrEqualTo(moneyLabel.snp.left).offset(-12)
         }
 
         categoryLabel.snp.makeConstraints {
@@ -118,11 +134,22 @@ extension DiaryTile {
         
         moneyLabel.attributedText =
             .richStyle(
-                model.diaryType == .expense ? "- \(model.money)원" : "+ \(model.money)원",
+                model.diaryType == .expense ? "- \(model.money.asCurrencyString)" : "+ \(model.money.asCurrencyString)",
                 style: .custom(
                     fontWeight: .semiBold,
                     size: 16
                 )
             )
+        moneyLabel.textColor = (model.diaryType == .expense) ? .black : .primaryLight
+    }
+    
+    private func setGesture() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTap))
+        addGestureRecognizer(tap)
+        isUserInteractionEnabled = true
+    }
+    
+    @objc private func didTap() {
+        onTap?()
     }
 }

@@ -63,7 +63,7 @@ final class HomeViewController: BaseUIViewController {
     
     override func setLayout() {
         headerView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(-30)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(52)
         }
@@ -113,10 +113,20 @@ extension HomeViewController {
         
         models.forEach { model in
             let tile = DiaryTile()
+            
             tile.configure(with: model)
             
             tile.snp.makeConstraints {
                 $0.height.equalTo(72)
+            }
+            
+            // 가계부 타일 클릭 시 상세 정보 띄우기
+            tile.onTap = { [weak self] in
+                let detailVC = DiaryDetailViewController(diary: model)
+                detailVC.modalPresentationStyle = .overFullScreen
+                detailVC.modalTransitionStyle = .crossDissolve
+                
+                self?.present(detailVC, animated: true)
             }
             
             diaryStackView.addArrangedSubview(tile)
