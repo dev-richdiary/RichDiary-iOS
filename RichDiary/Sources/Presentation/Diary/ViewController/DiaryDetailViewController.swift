@@ -31,6 +31,9 @@ final class DiaryDetailViewController: BaseUIViewController {
     private let paymentLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let memoLabel = UILabel()
+    private lazy var deleteButton = UIButton()
+    private lazy var editButton = UIButton()
+    private lazy var dismissButton = UIButton()
     
     
     // MARK: - init
@@ -57,9 +60,9 @@ final class DiaryDetailViewController: BaseUIViewController {
     //MARK: - Func
     
     override func setUI() {
-        self.view.addSubviews(backgroundView, scrollView)
+        self.view.addSubviews(backgroundView, scrollView, deleteButton, editButton)
         scrollView.addSubviews(contentView)
-        contentView.addSubviews(typeLabel, typeDescriptionLabel, moneyLabel, separatorView, dateLabel, categoryLabel, paymentLabel, descriptionLabel, memoLabel)
+        contentView.addSubviews(typeLabel, dismissButton, typeDescriptionLabel, moneyLabel, separatorView, dateLabel, categoryLabel, paymentLabel, descriptionLabel, memoLabel)
     }
     
     override func setStyle() {
@@ -79,6 +82,14 @@ final class DiaryDetailViewController: BaseUIViewController {
         typeDescriptionLabel.do {
             $0.attributedText = .richStyle("\(diary.type.description) 지출", style: .custom(fontWeight: .regular, size: 20))
             $0.textColor = .gray
+        }
+        
+        dismissButton.do {
+            $0.setTitle("✕ 닫기", for: .normal)
+            $0.setTitleColor(.gray12, for: .normal)
+            $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            $0.backgroundColor = .clear
+            $0.addTarget(self, action: #selector(dismissSelf), for: .touchUpInside)
         }
 
         moneyLabel.do {
@@ -118,6 +129,24 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
         }
+        
+        deleteButton.do {
+            $0.setTitle("삭제하기", for: .normal)
+            $0.setTitleColor(.white, for: .normal)
+            $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
+            $0.backgroundColor = .primaryRed
+            $0.layer.cornerRadius = 8
+            $0.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+        }
+
+        editButton.do {
+            $0.setTitle("수정하기", for: .normal)
+            $0.setTitleColor(.white, for: .normal)
+            $0.backgroundColor = .gray11
+            $0.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
+            $0.layer.cornerRadius = 8
+            $0.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        }
     }
     
     override func setLayout() {
@@ -149,6 +178,12 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.top.equalTo(typeLabel.snp.bottom)
             $0.leading.equalToSuperview().inset(20)
             $0.trailing.equalToSuperview().inset(20)
+        }
+        
+        dismissButton.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.top).inset(10)
+            $0.trailing.equalTo(contentView.snp.trailing).inset(20)
+            $0.size.equalTo(48)
         }
 
         moneyLabel.snp.makeConstraints {
@@ -194,6 +229,20 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.trailing.equalToSuperview().inset(20)
             $0.bottom.lessThanOrEqualTo(contentView.snp.bottom).inset(20)
         }
+        
+        deleteButton.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(20)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(20)
+            $0.height.equalTo(50)
+            $0.width.equalTo(editButton.snp.width)
+        }
+
+        editButton.snp.makeConstraints {
+            $0.leading.equalTo(deleteButton.snp.trailing).offset(20)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(deleteButton.snp.bottom)
+            $0.height.equalTo(deleteButton.snp.height)
+        }
     }
 }
 
@@ -207,7 +256,17 @@ extension DiaryDetailViewController {
     }
     
     @objc private func dismissSelf() {
-        dismiss(animated: true)
+        dismiss(animated: false)
+    }
+    
+    @objc private func deleteButtonTapped() {
+        // 삭제 기능 구현 예정
+        print("삭제하기 버튼 탭")
+    }
+
+    @objc private func editButtonTapped() {
+        // 수정 화면 전환 기능 구현 예정
+        print("수정하기 버튼 탭")
     }
 }
 
