@@ -155,7 +155,8 @@ final class DiaryDetailViewController: BaseUIViewController {
         }
 
         scrollView.snp.makeConstraints {
-            $0.center.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview().offset(-40)
             $0.width.equalToSuperview().inset(30)
             $0.height.equalToSuperview().inset(130)
         }
