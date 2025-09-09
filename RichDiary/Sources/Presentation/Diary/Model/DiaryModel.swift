@@ -7,10 +7,8 @@
 
 import Foundation
 
-enum ExpenseType {
-    case A
-    case B
-    case C
+enum ExpenseType: String {
+    case A = "A", B = "B", C = "C"
     
     var description: String {
         switch self {
@@ -22,17 +20,7 @@ enum ExpenseType {
             return "불필요"
         }
     }
-    
-    var type: String {
-        switch self {
-        case .A:
-            return "A"
-        case .B:
-            return "B"
-        case .C:
-            return "C"
-        }
-    }
+
 }
 
 enum PaymentType {

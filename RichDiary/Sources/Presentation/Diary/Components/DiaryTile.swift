@@ -55,10 +55,14 @@ final class DiaryTile: BaseUIView {
         
         descriptionLabel.do {
             $0.textColor = .black
+            $0.numberOfLines = 1
+            $0.lineBreakMode = .byTruncatingTail
+            $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         }
 
         moneyLabel.do {
             $0.textColor = .black
+            $0.setContentCompressionResistancePriority(.required, for: .horizontal)
         }
 
     }
@@ -73,7 +77,7 @@ final class DiaryTile: BaseUIView {
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(categoryImageView.snp.top).offset(2)
             $0.left.equalTo(categoryImageView.snp.right).offset(12)
-            $0.width.equalTo(150)
+            $0.right.lessThanOrEqualTo(moneyLabel.snp.left).offset(-12)
         }
 
         categoryLabel.snp.makeConstraints {
@@ -136,6 +140,7 @@ extension DiaryTile {
                     size: 16
                 )
             )
+        moneyLabel.textColor = (model.diaryType == .expense) ? .black : .primaryLight
     }
     
     private func setGesture() {

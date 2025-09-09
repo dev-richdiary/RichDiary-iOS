@@ -63,7 +63,7 @@ final class HomeViewController: BaseUIViewController {
     
     override func setLayout() {
         headerView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).inset(-30)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(-30)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(52)
         }
@@ -126,7 +126,7 @@ extension HomeViewController {
                 detailVC.modalPresentationStyle = .overFullScreen
                 detailVC.modalTransitionStyle = .crossDissolve
                 
-                self?.present(detailVC, animated: false)
+                self?.present(detailVC, animated: true)
             }
             
             diaryStackView.addArrangedSubview(tile)

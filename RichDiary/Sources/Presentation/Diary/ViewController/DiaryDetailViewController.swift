@@ -75,7 +75,7 @@ final class DiaryDetailViewController: BaseUIViewController {
         }
         
         typeLabel.do {
-            $0.attributedText = .richStyle(diary.type.type, style: .custom(fontWeight: .bold, size: 80))
+            $0.attributedText = .richStyle(diary.type.rawValue, style: .custom(fontWeight: .bold, size: 80))
             $0.textColor = diary.type == .C ? .red : .gray12
         }
 
@@ -89,6 +89,7 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.setTitleColor(.gray12, for: .normal)
             $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
             $0.backgroundColor = .clear
+            $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 10)
             $0.addTarget(self, action: #selector(dismissSelf), for: .touchUpInside)
         }
 
@@ -172,7 +173,7 @@ final class DiaryDetailViewController: BaseUIViewController {
         typeLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
             $0.leading.equalToSuperview().inset(20)
-            $0.trailing.equalToSuperview().inset(20)
+            $0.trailing.lessThanOrEqualTo(dismissButton.snp.leading).offset(-12)
         }
 
         typeDescriptionLabel.snp.makeConstraints {
@@ -183,8 +184,7 @@ final class DiaryDetailViewController: BaseUIViewController {
         
         dismissButton.snp.makeConstraints {
             $0.top.equalTo(contentView.snp.top).inset(10)
-            $0.trailing.equalTo(contentView.snp.trailing).inset(20)
-            $0.size.equalTo(48)
+            $0.trailing.equalTo(contentView.snp.trailing).inset(10)
         }
 
         moneyLabel.snp.makeConstraints {
