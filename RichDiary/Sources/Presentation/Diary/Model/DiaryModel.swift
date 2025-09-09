@@ -22,6 +22,17 @@ enum ExpenseType {
             return "불필요"
         }
     }
+    
+    var type: String {
+        switch self {
+        case .A:
+            return "A"
+        case .B:
+            return "B"
+        case .C:
+            return "C"
+        }
+    }
 }
 
 enum PaymentType {
@@ -109,7 +120,7 @@ final class DiaryModel {
 extension DiaryModel {
     static func dummy() -> [DiaryModel] {
         return [
-            DiaryModel(date: .now, money: 10000, category: .food, payment: .card, description: "테스트", memo: "테스트", type: .A, diaryType: .expense),
+            DiaryModel(date: .now, money: 100000000, category: .food, payment: .card, description: "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트", memo: "테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트테스트", type: .A, diaryType: .expense),
             DiaryModel(date: .now, money: 10000, category: .car, payment: .card, description: "테스트", memo: "테스트", type: .B, diaryType: .expense),
             DiaryModel(date: .now, money: 10000, category: .car, payment: .card, description: "테스트", memo: "테스트", type: .C, diaryType: .expense),
             DiaryModel(date: .now, money: 10000, category: .car, payment: .card, description: "테스트", memo: "테스트", type: .B, diaryType: .expense),

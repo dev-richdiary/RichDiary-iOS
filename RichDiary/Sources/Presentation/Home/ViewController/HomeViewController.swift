@@ -113,10 +113,20 @@ extension HomeViewController {
         
         models.forEach { model in
             let tile = DiaryTile()
+            
             tile.configure(with: model)
             
             tile.snp.makeConstraints {
                 $0.height.equalTo(72)
+            }
+            
+            // 가계부 타일 클릭 시 상세 정보 띄우기
+            tile.onTap = { [weak self] in
+                let detailVC = DiaryDetailViewController(diary: model)
+                detailVC.modalPresentationStyle = .overFullScreen
+                detailVC.modalTransitionStyle = .crossDissolve
+                
+                self?.present(detailVC, animated: false)
             }
             
             diaryStackView.addArrangedSubview(tile)
