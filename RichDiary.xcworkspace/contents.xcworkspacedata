@@ -8,12 +8,6 @@
       location = "container:"
       name = "Dependencies">
       <FileRef
-         location = "group:Tuist/.build/tuist-derived/Realm/Realm.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:Tuist/.build/tuist-derived/RealmDatabase/RealmDatabase.xcodeproj">
-      </FileRef>
-      <FileRef
          location = "group:Tuist/.build/tuist-derived/RxSwift/RxSwift.xcodeproj">
       </FileRef>
       <FileRef

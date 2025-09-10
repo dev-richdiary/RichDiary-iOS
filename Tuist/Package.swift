@@ -18,6 +18,5 @@ let package = Package(
         .package(url: "https://github.com/SnapKit/SnapKit.git", .upToNextMajor(from: "5.7.1")),
         .package(url: "https://github.com/devxoul/Then", .upToNextMajor(from: "3.0.0")),
         .package(url: "https://github.com/ReactiveX/RxSwift", .upToNextMajor(from: "6.9.0")),
-        .package(url: "https://github.com/realm/realm-swift.git", .upToNextMajor(from: "20.0.3")),
     ]
 )

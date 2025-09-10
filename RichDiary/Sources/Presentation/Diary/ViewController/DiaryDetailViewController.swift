@@ -89,7 +89,7 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.setTitleColor(.gray12, for: .normal)
             $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
             $0.backgroundColor = .clear
-            $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 10)
+            $0.configuration = .plain()
             $0.addTarget(self, action: #selector(dismissSelf), for: .touchUpInside)
         }
 
