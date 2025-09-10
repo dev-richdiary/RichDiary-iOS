@@ -63,7 +63,7 @@ final class HomeViewController: BaseUIViewController {
     
     override func setLayout() {
         headerView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(-30)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(-20)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(52)
         }
