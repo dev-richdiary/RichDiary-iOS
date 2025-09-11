@@ -28,7 +28,7 @@ class TabBarViewController: UITabBarController {
         self.tabBar.unselectedItemTintColor = .lightGray
         self.tabBar.backgroundColor = .gray2
         
-        viewControllers = [homeVC, calendarVC]
+        viewControllers = [calendarVC, homeVC]
     }
 }
 

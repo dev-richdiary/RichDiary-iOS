@@ -18,13 +18,14 @@ final class CalendarViewController: BaseUIViewController {
     private let contentView = UIView()
     private let headerView = CalendarHeaderView()
     private let calendarView = CalendarView()
+    private let diaryStackView = UIStackView()
     
     //MARK: - Func
 
     override func setUI() {
         self.view.addSubviews(headerView, scrollview)
         scrollview.addSubview(contentView)
-        contentView.addSubviews(calendarView)
+        contentView.addSubviews(calendarView, diaryStackView)
     }
     
     override func setStyle() {
@@ -35,6 +36,11 @@ final class CalendarViewController: BaseUIViewController {
             $0.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
         }
         
+        diaryStackView.do {
+            $0.axis = .vertical
+            $0.spacing = 0
+            $0.distribution = .fill
+        }
     }
     
     override func setLayout() {
@@ -57,6 +63,12 @@ final class CalendarViewController: BaseUIViewController {
         
         calendarView.snp.makeConstraints {
             $0.top.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+        
+        diaryStackView.snp.makeConstraints {
+            $0.top.equalTo(calendarView.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }

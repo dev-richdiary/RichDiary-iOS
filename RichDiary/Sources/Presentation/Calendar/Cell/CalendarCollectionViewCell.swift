@@ -74,7 +74,7 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
         
         // 기본 배경 (가계부 여부 반영)
         if hasDiary {
-            contentView.backgroundColor = .primaryLight
+            contentView.backgroundColor = .gray7
             dateLabel.textColor = .white
             contentView.layer.cornerRadius = 8
         } else {
@@ -82,7 +82,7 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
         }
         
         if let selectedDate = selectedDate, calendar.isDate(date, inSameDayAs: selectedDate) {
-            contentView.backgroundColor = .gray11
+            contentView.backgroundColor = .primaryLight
             dateLabel.textColor = .white
             contentView.layer.cornerRadius = self.bounds.width / 2
             contentView.clipsToBounds = true
@@ -91,7 +91,7 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if contentView.backgroundColor != .gray11 {
+        if contentView.backgroundColor != .primaryLight {
             contentView.clipsToBounds = false
         }
     }

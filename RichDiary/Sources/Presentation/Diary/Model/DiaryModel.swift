@@ -111,6 +111,10 @@ extension DiaryModel {
         let baseDate = Date()
         return [
             DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -1, to: baseDate)!, money: 120000, category: .car, payment: .money, description: "주유비", memo: "차량 주유소에서 휘발유 충전", type: .A, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -2, to: baseDate)!, money: 30000, category: .culture, payment: .card, description: "영화 관람", memo: "주말에 친구와 영화관람", type: .C, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -3, to: baseDate)!, money: 15000, category: .mart, payment: .money, description: "마트 장보기", memo: "간단한 간식과 음료 구매", type: .B, diaryType: .expense),
