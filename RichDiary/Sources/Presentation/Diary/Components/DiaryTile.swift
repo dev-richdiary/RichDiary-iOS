@@ -36,8 +36,7 @@ final class DiaryTile: BaseUIView {
     }
 
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setGesture()
+        fatalError("init(coder:) has not been implemented")
     }
     
     //MARK: - Func

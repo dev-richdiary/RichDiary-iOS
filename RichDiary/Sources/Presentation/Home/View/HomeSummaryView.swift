@@ -10,14 +10,17 @@ import UIKit
 import SnapKit
 import Then
 
+protocol HomeSummaryViewDelegate: AnyObject {
+    func didTapPreviousMonth()
+    func didTapNextMonth()
+    func didTapCalendar()
+}
+
 final class HomeSummaryView: BaseUIView {
     
     //MARK: - Properties
     
-    private let month = 9
-    private let expense = 475_180
-    private let income = 100_180
-    private let goal = 2_000_000
+    weak var delegate: HomeSummaryViewDelegate?
     
     
     //MARK: - UI Properties
@@ -46,7 +49,6 @@ final class HomeSummaryView: BaseUIView {
     
     override func setStyle() {
         monthLabel.do {
-            $0.attributedText = .richStyle("\(month)월", style: .custom(fontWeight: .semiBold, size: 26))
             $0.textColor = .black
         }
         
@@ -77,7 +79,6 @@ final class HomeSummaryView: BaseUIView {
         }
         
         expenseValueLabel.do {
-            $0.attributedText = .richStyle(expense.asCurrencyString, style: .custom(fontWeight: .semiBold, size: 22))
             $0.textColor = .black
         }
         
@@ -87,27 +88,21 @@ final class HomeSummaryView: BaseUIView {
         }
         
         incomeValueLabel.do {
-            $0.attributedText = .richStyle(income.asCurrencyString, style: .custom(fontWeight: .semiBold, size: 22))
             $0.textColor = .black
         }
         
         progressView.do {
-            let progressValue = min(Float(expense) / Float(goal), 1.0)
-            $0.progress = progressValue
-            $0.progressTintColor = expense > goal ? .red : .gray10
             $0.trackTintColor = .gray5
             $0.clipsToBounds = true
             $0.applyPillCornerRadius()
         }
         
         progressLabel.do {
-            $0.attributedText = .richStyle("\(expense.asCurrencyString) / \(goal.asCurrencyString)", style: .custom(fontWeight: .semiBold, size: 16))
             $0.textAlignment = .center
             $0.textColor = .white
         }
         
         goalLabel.do {
-            $0.attributedText = .richStyle("목표 지출금액: \(goal.asCurrencyString)", style: .caption1)
             $0.textColor = .gray8
         }
     }
@@ -172,6 +167,26 @@ final class HomeSummaryView: BaseUIView {
         }
     }
     
+    func configure(date: Date, expense: Int, income: Int, goal: Int) {
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = "M"
+        let monthString = monthFormatter.string(from: date)
+        
+        monthLabel.attributedText = .richStyle("\(monthString)월", style: .custom(fontWeight: .semiBold, size: 26))
+        
+        expenseValueLabel.attributedText = .richStyle(expense.asCurrencyString, style: .custom(fontWeight: .semiBold, size: 22))
+        
+        incomeValueLabel.attributedText = .richStyle(income.asCurrencyString, style: .custom(fontWeight: .semiBold, size: 22))
+        
+        let progressValue = goal > 0 ? min(Float(expense) / Float(goal), 1.0) : 0
+        progressView.progress = progressValue
+        progressView.progressTintColor = expense > goal ? .red : .gray10
+        
+        progressLabel.attributedText = .richStyle("\(expense.asCurrencyString) / \(goal.asCurrencyString)", style: .custom(fontWeight: .semiBold, size: 16))
+        
+        goalLabel.attributedText = .richStyle("목표 지출금액: \(goal.asCurrencyString)", style: .caption1)
+    }
+    
 }
 
 
@@ -179,14 +194,14 @@ final class HomeSummaryView: BaseUIView {
 
 extension HomeSummaryView {
     @objc private func onTapPreviousMonthButton() {
-        print("이전 달 버튼 클릭")
+        delegate?.didTapPreviousMonth()
     }
     
     @objc private func onTapNextMonthButton() {
-        print("다음 달 버튼 클릭")
+        delegate?.didTapNextMonth()
     }
     
     @objc private func onTapCalendarButton() {
-        print("달력 버튼 클릭")
+        delegate?.didTapCalendar()
     }
 }

@@ -27,7 +27,6 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
         setLayout()
     }
     
-    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -74,15 +73,15 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
         
         // 기본 배경 (가계부 여부 반영)
         if hasDiary {
-            contentView.backgroundColor = .primaryLight
+            contentView.backgroundColor = .gray9
             dateLabel.textColor = .white
-            contentView.layer.cornerRadius = 8
+            contentView.layer.cornerRadius = self.bounds.width / 2
         } else {
             contentView.backgroundColor = .clear
         }
         
         if let selectedDate = selectedDate, calendar.isDate(date, inSameDayAs: selectedDate) {
-            contentView.backgroundColor = .gray11
+            contentView.backgroundColor = .primaryLight
             dateLabel.textColor = .white
             contentView.layer.cornerRadius = self.bounds.width / 2
             contentView.clipsToBounds = true
@@ -91,7 +90,7 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if contentView.backgroundColor != .gray11 {
+        if contentView.backgroundColor != .primaryLight {
             contentView.clipsToBounds = false
         }
     }

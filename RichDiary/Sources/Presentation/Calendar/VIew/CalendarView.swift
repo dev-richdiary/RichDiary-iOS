@@ -14,6 +14,12 @@ final class CalendarView: BaseUIView {
     
     // MARK: - Properties
     
+    var onDateSelected: ((Date?) -> Void)? {
+        didSet {
+            onDateSelected?(self.selectedDate)
+        }
+    }
+    
     let dayOfTheWeek = ["일", "월", "화", "수", "목", "금", "토"]
     let diaryList = DiaryModel.dummy()
     
@@ -22,7 +28,13 @@ final class CalendarView: BaseUIView {
     }
     private var days: [Date?] = []
     private var diaryDates: Set<DateComponents> = []
-    private var selectedDate: Date?
+    
+    private var selectedDate: Date? {
+        didSet {
+            onDateSelected?(selectedDate)
+            calendarCollectionView.reloadData()
+        }
+    }
     
     private let calendarManager = CalendarManager()
     private var calendarCollectionViewHeightConstraint: Constraint?
@@ -62,11 +74,7 @@ final class CalendarView: BaseUIView {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-        self.selectedDate = self.currentDate
-        prepareDiaryDates()
-        reloadCalendar()
+        fatalError("init(coder:) has not been implemented")
     }
     
     
@@ -165,6 +173,18 @@ final class CalendarView: BaseUIView {
         }
     }
     
+    func resetToToday() {
+        let today = Date()
+        
+        // 선택된 날짜를 오늘로 변경
+        self.selectedDate = today
+        
+        // 현재 달력이 오늘이 속한 달이 아니라면, 오늘이 속한 달로 변경
+        if !Calendar.current.isDate(currentDate, inSameDayAs: today) {
+            self.currentDate = today
+        }
+    }
+    
     
     // MARK: - Private Func
     
@@ -190,10 +210,12 @@ final class CalendarView: BaseUIView {
     }
     
     @objc private func onTapPreviousMonth() {
+        selectedDate = nil
         currentDate = calendarManager.previousMonth(from: currentDate)
     }
     
     @objc private func onTapNextMonth() {
+        selectedDate = nil
         currentDate = calendarManager.nextMonth(from: currentDate)
     }
 }
@@ -238,7 +260,6 @@ extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         }
         
         self.selectedDate = selectedDay
-        self.calendarCollectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

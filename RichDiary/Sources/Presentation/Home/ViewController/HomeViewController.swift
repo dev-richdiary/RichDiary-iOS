@@ -10,7 +10,13 @@ import UIKit
 import SnapKit
 import Then
 
-final class HomeViewController: BaseUIViewController {
+final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSummaryViewDelegate {
+    
+    // MARK: - Properties
+    
+    let dummy = DiaryModel.dummy()
+    private var currentDate = Date()
+    
     
     // MARK: - UI Components
     
@@ -27,10 +33,8 @@ final class HomeViewController: BaseUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 예시 데이터를 생성합니다. 실제 앱에서는 API 통신 등으로 데이터를 가져옵니다.
-        let sampleData = DiaryModel.dummy()
-        
-        setupDiaryTiles(with: sampleData)
+        summaryView.delegate = self
+        updateUI(for: currentDate)
     }
     
     
@@ -98,39 +102,116 @@ final class HomeViewController: BaseUIViewController {
         }
     }
     
+    func resetToInitialState() {
+        scrollview.setContentOffset(.zero, animated: true)
+        currentDate = Date()
+        updateUI(for: currentDate)
+    }
+    
+    func didTapPreviousMonth() {
+        self.currentDate = Calendar.current.date(byAdding: .month, value: -1, to: currentDate) ?? currentDate
+        updateUI(for: currentDate)
+    }
+    
+    func didTapNextMonth() {
+        self.currentDate = Calendar.current.date(byAdding: .month, value: 1, to: currentDate) ?? currentDate
+        updateUI(for: currentDate)
+    }
+    
+    func didTapCalendar() {
+        self.tabBarController?.selectedIndex = 1
+    }
+    
 }
 
 
 //MARK: - Private Func
 
 extension HomeViewController {
-    private func setupDiaryTiles(with models: [DiaryModel]) {
-        // 기존에 추가된 뷰가 있다면 모두 제거 (데이터 업데이트 시 중복 방지)
+    private func createDateHeaderLabel(for date: Date) -> UIView {
+        let label = UILabel()
+        let container = UIView()
+        
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "M월 d일 EEEE" // ex) 9월 11일 목요일
+        
+        label.do {
+            $0.text = formatter.string(from: date)
+            $0.font = .systemFont(ofSize: 14, weight: .medium)
+            $0.textColor = .gray
+        }
+        
+        container.addSubviews(label)
+        
+        label.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalToSuperview().offset(20)
+        }
+        
+        return container
+    }
+    
+    private func setDiaryTiles(with models: [DiaryModel]) {
+        // 기존 뷰 제거
         diaryStackView.arrangedSubviews.forEach {
             diaryStackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
         
-        models.forEach { model in
-            let tile = DiaryTile()
-            
-            tile.configure(with: model)
-            
-            tile.snp.makeConstraints {
-                $0.height.equalTo(72)
-            }
-            
-            // 가계부 타일 클릭 시 상세 정보 띄우기
-            tile.onTap = { [weak self] in
-                let detailVC = DiaryDetailViewController(diary: model)
-                detailVC.modalPresentationStyle = .overFullScreen
-                detailVC.modalTransitionStyle = .crossDissolve
-                
-                self?.present(detailVC, animated: true)
-            }
-            
-            diaryStackView.addArrangedSubview(tile)
+        let groupedByDate = Dictionary(grouping: models) { model in
+            return Calendar.current.startOfDay(for: model.date)
         }
+        
+        let sortedDates = groupedByDate.keys.sorted(by: >)
+        
+        sortedDates.forEach { date in
+            // 날짜 헤더 추가
+            let header = createDateHeaderLabel(for: date)
+            diaryStackView.addArrangedSubview(header)
+            
+            header.snp.makeConstraints {
+                $0.height.equalTo(40)
+            }
+            
+            // 해당 날짜의 다이어리 타일들 추가
+            if let diariesForDate = groupedByDate[date] {
+                diariesForDate.forEach { model in
+                    let tile = DiaryTile()
+                    tile.configure(with: model)
+                    tile.snp.makeConstraints {
+                        $0.height.equalTo(72)
+                    }
+                    
+                    tile.onTap = { [weak self] in
+                        let detailVC = DiaryDetailViewController(diary: model)
+                        detailVC.modalPresentationStyle = .overFullScreen
+                        detailVC.modalTransitionStyle = .crossDissolve
+                        self?.present(detailVC, animated: true)
+                    }
+                    
+                    diaryStackView.addArrangedSubview(tile)
+                }
+            }
+            
+        }
+    }
+    
+    private func updateUI(for date: Date) {
+        
+        // 해당 월에 맞는 데이터 필터링
+        let diariesForMonth = dummy.filter {
+            Calendar.current.isDate($0.date, equalTo: date, toGranularity: .month)
+        }
+        
+        // 지출/수입 계산
+        let totalExpense = diariesForMonth.filter { $0.diaryType == .expense }.reduce(0) { $0 + $1.money }
+        let totalIncome = diariesForMonth.filter { $0.diaryType == .income }.reduce(0) { $0 + $1.money }
+        let goal = 2_000_000 // 목표 금액은 일단 고정
+        
+        summaryView.configure(date: date, expense: totalExpense, income: totalIncome, goal: goal)
+        
+        setDiaryTiles(with: diariesForMonth)
     }
 }
 

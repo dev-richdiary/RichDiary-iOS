@@ -118,7 +118,7 @@ final class DiaryDetailViewController: BaseUIViewController {
         }
 
         descriptionLabel.do {
-            $0.attributedText = .richStyle("설명 : \(diary.description)", style: .custom(fontWeight: .regular, size: 18))
+            $0.attributedText = .richStyle("설명 : \(diary.description)", style: .custom(fontWeight: .regular, size: 21))
             $0.textColor = .gray12
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
