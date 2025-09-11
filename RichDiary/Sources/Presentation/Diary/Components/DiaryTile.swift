@@ -26,6 +26,9 @@ final class DiaryTile: BaseUIView {
     private let categoryLabel = UILabel()
     private let moneyLabel = UILabel()
     
+    
+    //MARK: - init
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setGesture()
