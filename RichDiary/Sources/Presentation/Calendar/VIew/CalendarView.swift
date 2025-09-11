@@ -12,12 +12,29 @@ import Then
 
 final class CalendarView: BaseUIView {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     let dayOfTheWeek = ["일", "월", "화", "수", "목", "금", "토"]
+    let diaryList = DiaryModel.dummy()
+    
+    private var currentDate = Date() {
+        didSet { reloadCalendar() }
+    }
+    private var days: [Date?] = []
+    private var diaryDates: Set<DateComponents> = []
+    
+    private let calendarManager = CalendarManager()
+    private var calendarCollectionViewHeightConstraint: Constraint?
+    
+    private lazy var monthFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR") // Style enum 대신 직접 값 사용
+        formatter.dateFormat = "M월"
+        return formatter
+    }()
     
     
-    //MARK: - UI Properties
+    // MARK: - UI Components
     
     private let monthLabel = UILabel()
     private lazy var previousMonthButton = UIButton()
@@ -26,8 +43,23 @@ final class CalendarView: BaseUIView {
     private lazy var calendarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     
-    //MARK: - Func
-
+    // MARK: - init
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        prepareDiaryDates()
+        reloadCalendar()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        prepareDiaryDates()
+        reloadCalendar()
+    }
+    
+    
+    // MARK: - Func
+    
     override func setUI() {
         self.addSubviews(monthLabel, previousMonthButton, nextMonthButton, weekStackView, calendarCollectionView)
         
@@ -35,14 +67,15 @@ final class CalendarView: BaseUIView {
             let label = UILabel()
             label.attributedText = .richStyle($0, style: .custom(fontWeight: .bold, size: 20))
             label.textAlignment = .center
-            label.textColor = .gray12
+            label.textColor = .gray12 // Style enum 대신 직접 값 사용
             self.weekStackView.addArrangedSubview(label)
         }
     }
     
     override func setStyle() {
         monthLabel.do {
-            $0.attributedText = .richStyle("9월", style: .custom(fontWeight: .semiBold, size: 26))
+            let monthString = monthFormatter.string(from: currentDate)
+            $0.attributedText = .richStyle(monthString, style: .custom(fontWeight: .semiBold, size: 26))
         }
         
         previousMonthButton.do {
@@ -65,7 +98,10 @@ final class CalendarView: BaseUIView {
         }
         
         calendarCollectionView.do {
+            $0.delegate = self
+            $0.dataSource = self
             $0.register(CalendarCollectionViewCell.self, forCellWithReuseIdentifier: CalendarCollectionViewCell.cellIdentifier)
+            $0.backgroundColor = .clear
         }
     }
     
@@ -89,25 +125,89 @@ final class CalendarView: BaseUIView {
         
         weekStackView.snp.makeConstraints {
             $0.top.equalTo(monthLabel.snp.bottom).offset(30)
-            $0.horizontalEdges.equalToSuperview().inset(25)
+            $0.horizontalEdges.equalToSuperview().inset(20)
         }
         
         calendarCollectionView.snp.makeConstraints {
             $0.top.equalTo(weekStackView.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview().inset(25)
             $0.bottom.equalToSuperview()
+            
+            self.calendarCollectionViewHeightConstraint = $0.height.equalTo(0).constraint
         }
     }
-}
-
-//MARK: - Private Func
-
-extension CalendarView {
+    
+    
+    // MARK: - Private Func
+    
+    private func prepareDiaryDates() {
+        let calendar = Calendar.current
+        diaryDates = Set(diaryList.map { calendar.dateComponents([.year, .month, .day], from: $0.date) })
+    }
+    
+    private func reloadCalendar() {
+        let monthString = monthFormatter.string(from: currentDate)
+        monthLabel.attributedText = .richStyle(monthString, style: .custom(fontWeight: .semiBold, size: 26))
+        
+        days = calendarManager.daysInMonth(for: currentDate)
+        calendarCollectionView.reloadData()
+        
+        DispatchQueue.main.async {
+            self.updateCollectionViewHeight()
+        }
+    }
+    
+    private func updateCollectionViewHeight() {
+        let height = calendarCollectionView.collectionViewLayout.collectionViewContentSize.height
+        calendarCollectionViewHeightConstraint?.update(offset: height)
+    }
+    
     @objc private func onTapPreviousMonth() {
-        print("이전 달 클릭")
+        currentDate = calendarManager.previousMonth(from: currentDate)
     }
     
     @objc private func onTapNextMonth() {
-        print("다음 달 클릭")
+        currentDate = calendarManager.nextMonth(from: currentDate)
+    }
+}
+
+
+// MARK: - UICollectionViewDelegate, UICollectionViewDataSource
+
+extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return days.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CalendarCollectionViewCell.cellIdentifier, for: indexPath) as? CalendarCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let calendar = Calendar.current
+        let date = days[indexPath.item]
+        var hasDiary = false
+        
+        if let date = date {
+            let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+            hasDiary = diaryDates.contains(dateComponents)
+        }
+        cell.configure(date: date, selectedDate: currentDate, calendar: calendar, hasDiary: hasDiary)
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let availableWidth = collectionView.frame.width - (collectionView.contentInset.left + collectionView.contentInset.right)
+        let cellWidth = (availableWidth / 7 - 4).rounded(.down)
+        return CGSize(width: cellWidth, height: cellWidth)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
     }
 }

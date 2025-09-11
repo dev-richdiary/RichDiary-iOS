@@ -65,17 +65,7 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
         
         let day = calendar.component(.day, from: date)
         dateLabel.text = "\(day)"
-        
-        // 요일별 색상
-        let weekday = calendar.component(.weekday, from: date)
-        
-        if weekday == 1 {                       // 일요일
-            dateLabel.textColor = .red
-        } else if weekday == 7 {                // 토요일
-            dateLabel.textColor = .blue
-        } else {
-            dateLabel.textColor = .gray12
-        }
+        dateLabel.textColor = .gray12
         
         // 기본 배경 (가계부 여부 반영)
         if hasDiary {
