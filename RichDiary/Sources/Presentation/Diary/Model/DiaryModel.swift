@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ExpenseType: String {
+enum ExpenseType: String, CaseIterable {
     case A = "A", B = "B", C = "C"
     
     var description: String {
@@ -23,7 +23,7 @@ enum ExpenseType: String {
 
 }
 
-enum PaymentType {
+enum PaymentType: String, CaseIterable {
     case money
     case card
     case pay
@@ -45,8 +45,9 @@ enum DiaryType {
     case income
 }
 
-enum DiaryCategoryType {
+enum DiaryCategoryType: String, CaseIterable {
     case food
+    case salary
     case car
     case culture
     case mart
@@ -65,6 +66,7 @@ enum DiaryCategoryType {
     var description: String {
         switch self {
         case .food: return "식비"
+        case .salary: return "월급"
         case .car: return "교통/차량"
         case .culture: return "문화생활"
         case .mart: return "마트/편의점"
@@ -113,14 +115,14 @@ extension DiaryModel {
         let previousMonthDate2 = calendar.date(byAdding: .month, value: -2, to: baseDate)!
         return [
             // Previous month entries
-            DiaryModel(date: calendar.date(byAdding: .day, value: -1, to: previousMonthDate)!, money: 60000, category: .house, payment: .pay, description: "인터넷 요금 납부", memo: "3월 인터넷 사용료 결제", type: .A, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -1, to: previousMonthDate)!, money: 60000, category: .house, payment: .pay, description: "인터넷 요금 납부", memo: "8월 인터넷 사용료 결제", type: .A, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -5, to: previousMonthDate)!, money: 200000, category: .saving, payment: .pay, description: "적금 이체", memo: "매월 적금 자동이체", type: .A, diaryType: .expense),
-            DiaryModel(date: calendar.date(byAdding: .day, value: -10, to: previousMonthDate)!, money: 300000, category: .saving, payment: .pay, description: "월급 입금", memo: "3월 급여 입금 완료", type: .A, diaryType: .income),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -10, to: previousMonthDate)!, money: 300000, category: .salary, payment: .pay, description: "월급 입금", memo: "8월 급여 입금 완료", type: .A, diaryType: .income),
             DiaryModel(date: calendar.date(byAdding: .day, value: -3, to: previousMonthDate)!, money: 40000, category: .education, payment: .card, description: "서적 구매", memo: "개발 서적 구매", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -7, to: previousMonthDate)!, money: 15000, category: .food, payment: .money, description: "점심 식사", memo: "회사 근처 분식집", type: .B, diaryType: .expense),
-            DiaryModel(date: calendar.date(byAdding: .day, value: -1, to: previousMonthDate2)!, money: 60000, category: .house, payment: .pay, description: "인터넷 요금 납부", memo: "3월 인터넷 사용료 결제", type: .A, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -1, to: previousMonthDate2)!, money: 60000, category: .house, payment: .pay, description: "인터넷 요금 납부", memo: "7월 인터넷 사용료 결제", type: .A, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -5, to: previousMonthDate2)!, money: 200000, category: .saving, payment: .pay, description: "적금 이체", memo: "매월 적금 자동이체", type: .A, diaryType: .expense),
-            DiaryModel(date: calendar.date(byAdding: .day, value: -10, to: previousMonthDate2)!, money: 300000, category: .saving, payment: .pay, description: "월급 입금", memo: "3월 급여 입금 완료", type: .A, diaryType: .income),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -10, to: previousMonthDate2)!, money: 300000, category: .salary, payment: .pay, description: "월급 입금", memo: "7월 급여 입금 완료", type: .A, diaryType: .income),
             DiaryModel(date: calendar.date(byAdding: .day, value: -3, to: previousMonthDate2)!, money: 40000, category: .education, payment: .card, description: "서적 구매", memo: "개발 서적 구매", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -7, to: previousMonthDate2)!, money: 15000, category: .food, payment: .money, description: "점심 식사", memo: "회사 근처 분식집", type: .B, diaryType: .expense),
             
@@ -135,7 +137,7 @@ extension DiaryModel {
             DiaryModel(date: calendar.date(byAdding: .day, value: -3, to: baseDate)!, money: 15000, category: .mart, payment: .money, description: "마트 장보기", memo: "간단한 간식과 음료 구매", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -4, to: baseDate)!, money: 50000, category: .shopping, payment: .card, description: "옷 구매", memo: "봄맞이 셔츠 구매", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -5, to: baseDate)!, money: 7000, category: .life, payment: .card, description: "생활용품 구매", memo: "세제와 화장지 구입", type: .A, diaryType: .expense),
-            DiaryModel(date: calendar.date(byAdding: .day, value: -6, to: baseDate)!, money: 250000, category: .saving, payment: .pay, description: "월급 입금", memo: "이번 달 급여 입금 완료", type: .A, diaryType: .income),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -6, to: baseDate)!, money: 250000, category: .salary, payment: .pay, description: "월급 입금", memo: "이번 달 급여 입금 완료", type: .A, diaryType: .income),
             DiaryModel(date: calendar.date(byAdding: .day, value: -7, to: baseDate)!, money: 80000, category: .education, payment: .pay, description: "온라인 강의 결제", memo: "개발 관련 온라인 강의 수강료", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -8, to: baseDate)!, money: 100000, category: .event, payment: .money, description: "친구 결혼식 축의금", memo: "친구 결혼식 참석 축의금", type: .A, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: -9, to: baseDate)!, money: 50000, category: .pet, payment: .card, description: "반려동물 사료 구매", memo: "강아지 사료와 간식 구입", type: .A, diaryType: .expense)
