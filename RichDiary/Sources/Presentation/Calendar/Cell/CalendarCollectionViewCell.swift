@@ -56,7 +56,7 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Func
 
-    func configure(date: Date?, selectedDate: Date?, calendar: Calendar, hasDiary: Bool) {
+    func configure(date: Date?, selectedDate: Date?, calendar: Calendar, hasDiary: Bool, isFuture: Bool) {
         guard let date = date else {
             dateLabel.text = ""
             contentView.backgroundColor = .clear
@@ -65,7 +65,12 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
         
         let day = calendar.component(.day, from: date)
         dateLabel.text = "\(day)"
-        dateLabel.textColor = .gray12
+        
+        if isFuture {
+            dateLabel.textColor = .gray6
+        } else {
+            dateLabel.textColor = .gray12
+        }
         
         // 기본 배경 (가계부 여부 반영)
         if hasDiary {
@@ -81,6 +86,13 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
             dateLabel.textColor = .white
             contentView.layer.cornerRadius = self.bounds.width / 2
             contentView.clipsToBounds = true
+        }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if contentView.backgroundColor != .gray11 {
+            contentView.clipsToBounds = false
         }
     }
 }
