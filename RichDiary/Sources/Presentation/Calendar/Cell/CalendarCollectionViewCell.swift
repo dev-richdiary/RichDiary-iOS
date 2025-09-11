@@ -69,17 +69,18 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
         
         // 기본 배경 (가계부 여부 반영)
         if hasDiary {
-            contentView.backgroundColor = UIColor.systemTeal.withAlphaComponent(0.2)
+            contentView.backgroundColor = .primaryLight
+            dateLabel.textColor = .white
             contentView.layer.cornerRadius = 8
         } else {
             contentView.backgroundColor = .clear
         }
         
-        // 선택된 날짜 하이라이트
         if let selectedDate = selectedDate, calendar.isDate(date, inSameDayAs: selectedDate) {
-            contentView.backgroundColor = .systemPink.withAlphaComponent(0.5)
-            contentView.layer.cornerRadius = frame.width / 2
+            contentView.backgroundColor = .gray11
+            dateLabel.textColor = .white
+            contentView.layer.cornerRadius = self.bounds.width / 2
+            contentView.clipsToBounds = true
         }
     }
-    
 }

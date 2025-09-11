@@ -22,6 +22,7 @@ final class CalendarView: BaseUIView {
     }
     private var days: [Date?] = []
     private var diaryDates: Set<DateComponents> = []
+    private var selectedDate: Date?
     
     private let calendarManager = CalendarManager()
     private var calendarCollectionViewHeightConstraint: Constraint?
@@ -47,12 +48,16 @@ final class CalendarView: BaseUIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        self.selectedDate = self.currentDate
         prepareDiaryDates()
         reloadCalendar()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        
+        self.selectedDate = self.currentDate
         prepareDiaryDates()
         reloadCalendar()
     }
@@ -125,7 +130,7 @@ final class CalendarView: BaseUIView {
         
         weekStackView.snp.makeConstraints {
             $0.top.equalTo(monthLabel.snp.bottom).offset(30)
-            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.horizontalEdges.equalToSuperview().inset(22)
         }
         
         calendarCollectionView.snp.makeConstraints {
@@ -192,9 +197,16 @@ extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewData
             let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
             hasDiary = diaryDates.contains(dateComponents)
         }
-        cell.configure(date: date, selectedDate: currentDate, calendar: calendar, hasDiary: hasDiary)
+        
+        cell.configure(date: date, selectedDate: self.selectedDate, calendar: calendar, hasDiary: hasDiary)
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let selectedDay = days[indexPath.item] else { return }
+        self.selectedDate = selectedDay
+        self.calendarCollectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
