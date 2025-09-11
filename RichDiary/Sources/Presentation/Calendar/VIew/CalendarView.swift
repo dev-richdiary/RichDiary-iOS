@@ -14,6 +14,12 @@ final class CalendarView: BaseUIView {
     
     // MARK: - Properties
     
+    var onDateSelected: ((Date?) -> Void)? {
+        didSet {
+            onDateSelected?(self.selectedDate)
+        }
+    }
+    
     let dayOfTheWeek = ["일", "월", "화", "수", "목", "금", "토"]
     let diaryList = DiaryModel.dummy()
     
@@ -190,10 +196,12 @@ final class CalendarView: BaseUIView {
     }
     
     @objc private func onTapPreviousMonth() {
+        selectedDate = nil
         currentDate = calendarManager.previousMonth(from: currentDate)
     }
     
     @objc private func onTapNextMonth() {
+        selectedDate = nil
         currentDate = calendarManager.nextMonth(from: currentDate)
     }
 }
@@ -239,6 +247,7 @@ extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         
         self.selectedDate = selectedDay
         self.calendarCollectionView.reloadData()
+        onDateSelected?(self.selectedDate)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

@@ -12,6 +12,11 @@ import Then
 
 final class CalendarViewController: BaseUIViewController {
     
+    // MARK: - Properties
+
+    private var dummy = DiaryModel.dummy()
+    
+    
     // MARK: - UI Components
 
     private let scrollview = UIScrollView()
@@ -19,6 +24,16 @@ final class CalendarViewController: BaseUIViewController {
     private let headerView = CalendarHeaderView()
     private let calendarView = CalendarView()
     private let diaryStackView = UIStackView()
+    
+    
+    // MARK: - Life Cycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        selectDate()
+    }
+    
     
     //MARK: - Func
 
@@ -64,7 +79,6 @@ final class CalendarViewController: BaseUIViewController {
         calendarView.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
         }
         
         diaryStackView.snp.makeConstraints {
@@ -73,7 +87,47 @@ final class CalendarViewController: BaseUIViewController {
             $0.bottom.equalToSuperview()
         }
     }
+}
+
+
+//MARK: - Private Func
+
+extension CalendarViewController {
+    private func selectDate() {
+        calendarView.onDateSelected = { [weak self] date in
+            self?.updateDiaryTiles(for: date)
+        }
+    }
     
+    private func updateDiaryTiles(for date: Date?) {
+        guard let selectedDate = date else {
+            diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            return
+        }
+        
+        let filteredDiaries = self.dummy.filter { diary in
+            Calendar.current.isDate(diary.date, inSameDayAs: selectedDate)
+        }
+        
+        diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        filteredDiaries.forEach { model in
+            let tile = DiaryTile()
+            tile.configure(with: model)
+            tile.snp.makeConstraints {
+                $0.height.equalTo(72)
+            }
+            
+            tile.onTap = { [weak self] in
+                let detailVC = DiaryDetailViewController(diary: model)
+                detailVC.modalPresentationStyle = .overFullScreen
+                detailVC.modalTransitionStyle = .crossDissolve
+                self?.present(detailVC, animated: true)
+            }
+            
+            diaryStackView.addArrangedSubview(tile)
+        }
+    }
 }
 
 #Preview {
