@@ -95,4 +95,13 @@ final class CalendarCollectionViewCell: UICollectionViewCell {
             contentView.clipsToBounds = false
         }
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        dateLabel.text = nil
+        dateLabel.textColor = .gray12
+        contentView.backgroundColor = .clear
+        contentView.layer.cornerRadius = 0
+        contentView.clipsToBounds = false
+    }
 }

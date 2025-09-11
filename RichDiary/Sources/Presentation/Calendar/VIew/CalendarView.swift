@@ -243,7 +243,9 @@ extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - (collectionView.contentInset.left + collectionView.contentInset.right)
-        let cellWidth = (availableWidth / 7 - 6).rounded(.down)
+        let spacing: CGFloat = 3
+        let totalSpacing = spacing * 6
+        let cellWidth = floor((availableWidth - totalSpacing) / 7)
         return CGSize(width: cellWidth, height: cellWidth)
     }
     
