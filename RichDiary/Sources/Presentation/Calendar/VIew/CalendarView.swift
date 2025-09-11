@@ -28,7 +28,13 @@ final class CalendarView: BaseUIView {
     }
     private var days: [Date?] = []
     private var diaryDates: Set<DateComponents> = []
-    private var selectedDate: Date?
+    
+    private var selectedDate: Date? {
+        didSet {
+            onDateSelected?(selectedDate)
+            calendarCollectionView.reloadData()
+        }
+    }
     
     private let calendarManager = CalendarManager()
     private var calendarCollectionViewHeightConstraint: Constraint?
@@ -68,11 +74,7 @@ final class CalendarView: BaseUIView {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-        self.selectedDate = self.currentDate
-        prepareDiaryDates()
-        reloadCalendar()
+        fatalError("init(coder:) has not been implemented")
     }
     
     
@@ -171,6 +173,18 @@ final class CalendarView: BaseUIView {
         }
     }
     
+    func resetToToday() {
+        let today = Date()
+        
+        // 선택된 날짜를 오늘로 변경
+        self.selectedDate = today
+        
+        // 현재 달력이 오늘이 속한 달이 아니라면, 오늘이 속한 달로 변경
+        if !Calendar.current.isDate(currentDate, inSameDayAs: today) {
+            self.currentDate = today
+        }
+    }
+    
     
     // MARK: - Private Func
     
@@ -246,8 +260,6 @@ extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         }
         
         self.selectedDate = selectedDay
-        self.calendarCollectionView.reloadData()
-        onDateSelected?(self.selectedDate)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

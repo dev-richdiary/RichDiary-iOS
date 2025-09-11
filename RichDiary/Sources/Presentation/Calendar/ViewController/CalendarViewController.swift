@@ -10,15 +10,15 @@ import UIKit
 import SnapKit
 import Then
 
-final class CalendarViewController: BaseUIViewController {
+final class CalendarViewController: BaseUIViewController, TabBarResettable {
     
     // MARK: - Properties
-
+    
     private var dummy = DiaryModel.dummy()
     
     
     // MARK: - UI Components
-
+    
     private let scrollview = UIScrollView()
     private let contentView = UIView()
     private let headerView = CalendarHeaderView()
@@ -27,7 +27,7 @@ final class CalendarViewController: BaseUIViewController {
     
     
     // MARK: - Life Cycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,7 +36,7 @@ final class CalendarViewController: BaseUIViewController {
     
     
     //MARK: - Func
-
+    
     override func setUI() {
         self.view.addSubviews(headerView, scrollview)
         scrollview.addSubview(contentView)
@@ -86,6 +86,12 @@ final class CalendarViewController: BaseUIViewController {
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    func resetToInitialState() {
+        scrollview.setContentOffset(.zero, animated: true)
+        
+        calendarView.resetToToday()
     }
 }
 

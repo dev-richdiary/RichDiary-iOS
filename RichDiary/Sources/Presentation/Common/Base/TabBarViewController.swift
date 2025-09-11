@@ -7,7 +7,11 @@
 
 import UIKit
 
-class TabBarViewController: UITabBarController {
+protocol TabBarResettable {
+    func resetToInitialState()
+}
+
+class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,6 +20,8 @@ class TabBarViewController: UITabBarController {
     }
 
     private func setTabBar() {
+        self.delegate = self
+        
         let homeVC = HomeViewController()
         homeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         homeVC.view.backgroundColor = .gray11
@@ -29,6 +35,12 @@ class TabBarViewController: UITabBarController {
         self.tabBar.backgroundColor = .gray2
         
         viewControllers = [calendarVC, homeVC]
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        if let resettableVC = viewController as? TabBarResettable {
+            resettableVC.resetToInitialState()
+        }
     }
 }
 

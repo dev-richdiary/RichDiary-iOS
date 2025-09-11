@@ -10,10 +10,10 @@ import UIKit
 import SnapKit
 import Then
 
-final class HomeViewController: BaseUIViewController {
+final class HomeViewController: BaseUIViewController, TabBarResettable {
     
     // MARK: - Properties
-
+    
     let dummy = DiaryModel.dummy()
     
     
@@ -98,6 +98,13 @@ final class HomeViewController: BaseUIViewController {
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    func resetToInitialState() {
+        scrollview.setContentOffset(.zero, animated: true)
+        
+        let diaryDataList = DiaryModel.dummy()
+        setDiaryTiles(with: diaryDataList)
     }
     
 }
