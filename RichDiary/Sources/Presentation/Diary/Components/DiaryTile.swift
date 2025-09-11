@@ -21,6 +21,7 @@ final class DiaryTile: BaseUIView {
     
     //MARK: - UI Properties
 
+    private let categoryImageContainerView = UIView()
     private let categoryImageView = UIImageView()
     private let descriptionLabel = UILabel()
     private let categoryLabel = UILabel()
@@ -42,13 +43,18 @@ final class DiaryTile: BaseUIView {
     //MARK: - Func
 
     override func setUI() {
-        self.addSubviews(categoryImageView, descriptionLabel, categoryLabel, moneyLabel)
+        self.addSubviews(categoryImageContainerView, descriptionLabel, categoryLabel, moneyLabel)
+        categoryImageContainerView.addSubview(categoryImageView)
     }
     
     override func setStyle() {
+        categoryImageContainerView.do {
+            $0.layer.cornerRadius = 20
+            $0.clipsToBounds = true
+        }
+
         categoryImageView.do {
             $0.contentMode = .scaleAspectFit
-            $0.layer.cornerRadius = 20
             $0.clipsToBounds = true
         }
         
@@ -71,15 +77,19 @@ final class DiaryTile: BaseUIView {
     }
     
     override func setLayout() {
-        categoryImageView.snp.makeConstraints {
+        categoryImageContainerView.snp.makeConstraints {
             $0.size.equalTo(40)
             $0.left.equalToSuperview().offset(20)
             $0.centerY.equalToSuperview()
         }
 
+        categoryImageView.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(4)
+        }
+
         descriptionLabel.snp.makeConstraints {
-            $0.top.equalTo(categoryImageView.snp.top).offset(2)
-            $0.left.equalTo(categoryImageView.snp.right).offset(12)
+            $0.top.equalTo(categoryImageContainerView.snp.top).offset(2)
+            $0.left.equalTo(categoryImageContainerView.snp.right).offset(12)
             $0.right.lessThanOrEqualTo(moneyLabel.snp.left).offset(-12)
         }
 
@@ -110,11 +120,11 @@ extension DiaryTile {
         categoryImageView.image = UIImage(named: "icon_\(model.category)") ?? UIImage(resource: .iconEtc)
         
         if model.type == .C {
-            categoryImageView.backgroundColor = .primaryRed
+            categoryImageContainerView.backgroundColor = .primaryRed
         } else if model.type == .B {
-            categoryImageView.backgroundColor = .primaryOrange
+            categoryImageContainerView.backgroundColor = .primaryOrange
         } else {
-            categoryImageView.backgroundColor = .primaryLight
+            categoryImageContainerView.backgroundColor = .primaryLight
         }
         
         descriptionLabel.attributedText =

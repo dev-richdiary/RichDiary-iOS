@@ -72,6 +72,11 @@ final class CalendarView: BaseUIView {
     
     // MARK: - Func
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateCollectionViewHeight()
+    }
+    
     override func setUI() {
         self.addSubviews(monthLabel, previousMonthButton, nextMonthButton, yearLabel, weekStackView, calendarCollectionView)
         
@@ -177,10 +182,6 @@ final class CalendarView: BaseUIView {
         
         days = calendarManager.daysInMonth(for: currentDate)
         calendarCollectionView.reloadData()
-        
-        DispatchQueue.main.async {
-            self.updateCollectionViewHeight()
-        }
     }
     
     private func updateCollectionViewHeight() {
