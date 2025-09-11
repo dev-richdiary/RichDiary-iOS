@@ -34,7 +34,7 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         self.tabBar.unselectedItemTintColor = .lightGray
         self.tabBar.backgroundColor = .gray2
         
-        viewControllers = [calendarVC, homeVC]
+        viewControllers = [homeVC, calendarVC]
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {

@@ -109,7 +109,22 @@ extension DiaryModel {
     static func dummy() -> [DiaryModel] {
         let calendar = Calendar.current
         let baseDate = Date()
+        let previousMonthDate = calendar.date(byAdding: .month, value: -1, to: baseDate)!
+        let previousMonthDate2 = calendar.date(byAdding: .month, value: -2, to: baseDate)!
         return [
+            // Previous month entries
+            DiaryModel(date: calendar.date(byAdding: .day, value: -1, to: previousMonthDate)!, money: 60000, category: .house, payment: .pay, description: "인터넷 요금 납부", memo: "3월 인터넷 사용료 결제", type: .A, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -5, to: previousMonthDate)!, money: 200000, category: .saving, payment: .pay, description: "적금 이체", memo: "매월 적금 자동이체", type: .A, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -10, to: previousMonthDate)!, money: 300000, category: .saving, payment: .pay, description: "월급 입금", memo: "3월 급여 입금 완료", type: .A, diaryType: .income),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -3, to: previousMonthDate)!, money: 40000, category: .education, payment: .card, description: "서적 구매", memo: "개발 서적 구매", type: .B, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -7, to: previousMonthDate)!, money: 15000, category: .food, payment: .money, description: "점심 식사", memo: "회사 근처 분식집", type: .B, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -1, to: previousMonthDate2)!, money: 60000, category: .house, payment: .pay, description: "인터넷 요금 납부", memo: "3월 인터넷 사용료 결제", type: .A, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -5, to: previousMonthDate2)!, money: 200000, category: .saving, payment: .pay, description: "적금 이체", memo: "매월 적금 자동이체", type: .A, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -10, to: previousMonthDate2)!, money: 300000, category: .saving, payment: .pay, description: "월급 입금", memo: "3월 급여 입금 완료", type: .A, diaryType: .income),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -3, to: previousMonthDate2)!, money: 40000, category: .education, payment: .card, description: "서적 구매", memo: "개발 서적 구매", type: .B, diaryType: .expense),
+            DiaryModel(date: calendar.date(byAdding: .day, value: -7, to: previousMonthDate2)!, money: 15000, category: .food, payment: .money, description: "점심 식사", memo: "회사 근처 분식집", type: .B, diaryType: .expense),
+            
+            // Current month entries
             DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),
             DiaryModel(date: calendar.date(byAdding: .day, value: 0, to: baseDate)!, money: 45000, category: .food, payment: .card, description: "점심 식사", memo: "회사 근처 김밥천국에서 점심", type: .B, diaryType: .expense),

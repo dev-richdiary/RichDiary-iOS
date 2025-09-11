@@ -107,7 +107,10 @@ extension CalendarViewController {
     
     private func updateDiaryTiles(for date: Date?) {
         guard let selectedDate = date else {
-            diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            diaryStackView.arrangedSubviews.forEach {
+                diaryStackView.removeArrangedSubview($0)
+                $0.removeFromSuperview()
+            }
             return
         }
         
@@ -115,7 +118,10 @@ extension CalendarViewController {
             Calendar.current.isDate(diary.date, inSameDayAs: selectedDate)
         }
         
-        diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        diaryStackView.arrangedSubviews.forEach {
+            diaryStackView.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
         
         filteredDiaries.forEach { model in
             let tile = DiaryTile()

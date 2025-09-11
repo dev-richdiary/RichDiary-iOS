@@ -10,11 +10,12 @@ import UIKit
 import SnapKit
 import Then
 
-final class HomeViewController: BaseUIViewController, TabBarResettable {
+final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSummaryViewDelegate {
     
     // MARK: - Properties
     
     let dummy = DiaryModel.dummy()
+    private var currentDate = Date()
     
     
     // MARK: - UI Components
@@ -32,7 +33,8 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setDiaryTiles(with: dummy)
+        summaryView.delegate = self
+        updateUI(for: currentDate)
     }
     
     
@@ -102,9 +104,22 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     
     func resetToInitialState() {
         scrollview.setContentOffset(.zero, animated: true)
-        
-        let diaryDataList = DiaryModel.dummy()
-        setDiaryTiles(with: diaryDataList)
+        currentDate = Date()
+        updateUI(for: currentDate)
+    }
+    
+    func didTapPreviousMonth() {
+        self.currentDate = Calendar.current.date(byAdding: .month, value: -1, to: currentDate) ?? currentDate
+        updateUI(for: currentDate)
+    }
+    
+    func didTapNextMonth() {
+        self.currentDate = Calendar.current.date(byAdding: .month, value: 1, to: currentDate) ?? currentDate
+        updateUI(for: currentDate)
+    }
+    
+    func didTapCalendar() {
+        self.tabBarController?.selectedIndex = 1
     }
     
 }
@@ -180,6 +195,23 @@ extension HomeViewController {
             }
             
         }
+    }
+    
+    private func updateUI(for date: Date) {
+        
+        // 해당 월에 맞는 데이터 필터링
+        let diariesForMonth = dummy.filter {
+            Calendar.current.isDate($0.date, equalTo: date, toGranularity: .month)
+        }
+        
+        // 지출/수입 계산
+        let totalExpense = diariesForMonth.filter { $0.diaryType == .expense }.reduce(0) { $0 + $1.money }
+        let totalIncome = diariesForMonth.filter { $0.diaryType == .income }.reduce(0) { $0 + $1.money }
+        let goal = 2_000_000 // 목표 금액은 일단 고정
+        
+        summaryView.configure(date: date, expense: totalExpense, income: totalIncome, goal: goal)
+        
+        setDiaryTiles(with: diariesForMonth)
     }
 }
 
