@@ -20,6 +20,11 @@ final class AddDiaryViewController: BaseUIViewController {
     
     private var selectedCategory: DiaryCategoryType?
     
+    private lazy var numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
     
     // MARK: - UI Components
     
@@ -67,8 +72,12 @@ final class AddDiaryViewController: BaseUIViewController {
         
         setNavigationBar()
         setDatePicker()
+        setKeyboardObserver()
     }
     
+    deinit {
+        removeKeyboardObserver()
+    }
     
     // MARK: - override Func
     
@@ -119,6 +128,7 @@ final class AddDiaryViewController: BaseUIViewController {
             $0.borderStyle = .roundedRect
             $0.keyboardType = .numberPad
             $0.placeholder = "금액을 입력하세요"
+            $0.delegate = self
         }
         
         descriptionLabel.do {
@@ -313,6 +323,55 @@ extension AddDiaryViewController {
 }
 
 
+// MARK: - Keyboard Setting
+
+extension AddDiaryViewController {
+    private func setKeyboardObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    private func removeKeyboardObserver() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        // 키보드 정보를 가져옴
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+            return
+        }
+        
+        // 키보드 높이만큼 스크롤뷰의 하단에 여백(inset)을 추가
+        let contentInset = UIEdgeInsets(
+            top: 0.0,
+            left: 0.0,
+            bottom: keyboardFrame.size.height,
+            right: 0.0)
+        scrollView.contentInset = contentInset
+        scrollView.scrollIndicatorInsets = contentInset
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        // 키보드가 사라지면 여백을 다시 0으로 설정
+        let contentInset = UIEdgeInsets.zero
+        scrollView.contentInset = contentInset
+        scrollView.scrollIndicatorInsets = contentInset
+    }
+}
+
+
 // MARK: - Button Action
 
 extension AddDiaryViewController {
@@ -397,5 +456,37 @@ extension AddDiaryViewController: UITextViewDelegate {
             textView.text = "메모를 입력하세요 (선택)"
             textView.textColor = .lightGray
         }
+    }
+}
+
+
+// MARK: - UITextField Delegate
+
+extension AddDiaryViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == amountTextField {
+            let currentText = textField.text ?? ""
+            guard let stringRange = Range(range, in: currentText) else { return false }
+            let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+            
+            let numberString = updatedText.replacingOccurrences(of: ",", with: "")
+            
+            if numberString.isEmpty {
+                textField.text = ""
+                return false
+            }
+            
+            guard let number = Int(numberString) else {
+                return false
+            }
+            
+            let formattedString = numberFormatter.string(from: NSNumber(value: number))
+            
+            textField.text = formattedString
+            
+            return false
+        }
+        
+        return true
     }
 }
