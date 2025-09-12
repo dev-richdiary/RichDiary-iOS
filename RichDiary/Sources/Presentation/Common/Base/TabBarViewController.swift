@@ -97,6 +97,8 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
 extension TabBarViewController {
     @objc private func didTapFloatingButton() {
-        print("가계부 작성 버튼 클릭")
+         let addDiaryViewController = AddDiaryViewController()
+         let viewController = UINavigationController(rootViewController: addDiaryViewController)
+         self.present(viewController, animated: true)
     }
 }
