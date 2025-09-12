@@ -1,5 +1,5 @@
 //
-//  DiaryDatePicker.swift
+//  DiaryDatePickerView.swift
 //  RichDiary
 //
 //  Created by OneTen on 9/12/25.
@@ -10,13 +10,12 @@ import UIKit
 import SnapKit
 import Then
 
-final class DiaryDatePicker: BaseUIView {
+final class DiaryDatePickerView: BaseUIView {
     
     // MARK: - Properties
 
     public var date: Date = Date() {
         didSet {
-            // 날짜가 변경되면 텍스트 필드의 내용도 업데이트
             dateTextField.text = formatDate(date: date)
         }
     }
@@ -77,7 +76,7 @@ final class DiaryDatePicker: BaseUIView {
 
 // MARK: - Private Func
 
-extension DiaryDatePicker {
+extension DiaryDatePickerView {
     private func setupDatePicker() {
         datePicker.do {
             $0.datePickerMode = .date
@@ -114,8 +113,8 @@ extension DiaryDatePicker {
 
 // MARK: - UITextFieldDelegate
 
-extension DiaryDatePicker: UITextFieldDelegate {
+extension DiaryDatePickerView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        return false // 텍스트 필드에 직접적인 입력 방지
+        return false
     }
 }
