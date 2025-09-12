@@ -33,11 +33,11 @@ final class AddDiaryViewController: BaseUIViewController {
     private let datePickerView = DiaryDatePickerView()
     
     // 금액, 설명
-     private let diaryTextFieldView = DiaryTextFieldView()
+    private let diaryTextFieldView = DiaryTextFieldView()
     
     // 카테고리
-     private let categorySelectView = DiaryCategoryView()
-
+    private let categorySelectView = DiaryCategoryView()
+    
     // 결제 수단
     private let paymentLabel = UILabel()
     private lazy var paymentSegmentedControl = UISegmentedControl(items: self.paymentTypes.map { $0.description })
@@ -51,7 +51,7 @@ final class AddDiaryViewController: BaseUIViewController {
     private let memoLabel = UILabel()
     private let memoTextView = UITextView()
     private let memoCountLabel = UILabel()
-
+    
     
     // MARK: - Life Cycle
     
@@ -132,7 +132,7 @@ final class AddDiaryViewController: BaseUIViewController {
         }
         
         memoCountLabel.do {
-            $0.attributedText = .richStyle("(0/20)", style: .custom(fontWeight: .regular, size: 12))
+            $0.attributedText = .richStyle("(0/400)", style: .custom(fontWeight: .regular, size: 12))
             $0.textColor = .lightGray
             $0.textAlignment = .right
         }
@@ -213,15 +213,34 @@ final class AddDiaryViewController: BaseUIViewController {
 // MARK: - Button Action
 
 extension AddDiaryViewController {
+    private func presentAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        self.present(alert, animated: true)
+    }
+    
     @objc func didTapCancelButton() {
         self.dismiss(animated: true)
     }
     
     @objc func didTapSaveButton() {
-        let diaryType: DiaryType = diaryTypeSegmentedControl.selectedSegmentIndex == 0 ? .expense : .income
-        let date = datePickerView.date
         let money = diaryTextFieldView.amount
         let description = diaryTextFieldView.diaryDescription
+        
+        // 금액이 0원일 경우 입력 방지 메세지
+        if money == 0 {
+            presentAlert(title: "알림", message: "금액을 입력해주세요.")
+            return
+        }
+        
+        // 내용이 비어있을 경우 입력 방지 메세지
+        if description.isEmpty {
+            presentAlert(title: "알림", message: "내용을 입력해주세요.")
+            return
+        }
+        
+        let diaryType: DiaryType = diaryTypeSegmentedControl.selectedSegmentIndex == 0 ? .expense : .income
+        let date = datePickerView.date
         let category = categorySelectView.selectedCategory ?? .etc
         let payment = paymentTypes[paymentSegmentedControl.selectedSegmentIndex]
         let memo = (memoTextView.text == "메모를 입력하세요 (선택)") ? "" : memoTextView.text ?? ""
@@ -300,7 +319,7 @@ extension AddDiaryViewController {
 extension AddDiaryViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         self.activeField = textView
-
+        
         if textView.text == "메모를 입력하세요 (선택)" {
             textView.text = ""
             textView.textColor = .black
@@ -311,7 +330,7 @@ extension AddDiaryViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         self.activeField = nil
-
+        
         if textView.text.isEmpty {
             textView.text = "메모를 입력하세요 (선택)"
             textView.textColor = .lightGray

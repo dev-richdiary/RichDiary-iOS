@@ -11,9 +11,9 @@ import SnapKit
 import Then
 
 final class DiaryTextFieldView: BaseUIView {
-
+    
     // MARK: - Properties
-
+    
     public var amount: Int {
         let amountString = amountTextField.text?.replacingOccurrences(of: ",", with: "") ?? ""
         return Int(amountString) ?? 0
@@ -22,37 +22,37 @@ final class DiaryTextFieldView: BaseUIView {
     public var diaryDescription: String {
         return descriptionTextField.text ?? ""
     }
-
+    
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.locale = Locale(identifier: "ko_KR")
         return formatter
     }()
-
+    
     
     // MARK: - UI Components
     
     private let amountLabel = UILabel()
     private let amountTextField = UITextField()
     private let limitLabel = UILabel()
-
+    
     private let descriptionLabel = UILabel()
     private let descriptionTextField = UITextField()
     private let descriptionCountLabel = UILabel()
-
+    
     
     // MARK: - override Func
     
     override func setUI() {
         self.addSubviews(amountLabel, amountTextField, limitLabel, descriptionLabel, descriptionTextField, descriptionCountLabel)
     }
-
+    
     override func setStyle() {
         amountLabel.do {
             $0.attributedText = .richStyle("금액", style: .custom(fontWeight: .bold, size: 16))
         }
-
+        
         amountTextField.do {
             $0.borderStyle = .roundedRect
             $0.keyboardType = .numberPad
@@ -75,11 +75,11 @@ final class DiaryTextFieldView: BaseUIView {
             $0.textColor = .systemGray2
             $0.textAlignment = .right
         }
-
+        
         descriptionLabel.do {
             $0.attributedText = .richStyle("내용", style: .custom(fontWeight: .bold, size: 16))
         }
-
+        
         descriptionTextField.do {
             $0.borderStyle = .roundedRect
             $0.placeholder = "내용을 입력하세요"
@@ -92,28 +92,28 @@ final class DiaryTextFieldView: BaseUIView {
             $0.textAlignment = .right
         }
     }
-
+    
     override func setLayout() {
         amountLabel.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
         }
-
+        
         amountTextField.snp.makeConstraints {
             $0.top.equalTo(amountLabel.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(44)
         }
-
+        
         limitLabel.snp.makeConstraints {
             $0.top.equalTo(amountTextField.snp.bottom).offset(4)
             $0.trailing.equalTo(amountTextField.snp.trailing)
         }
-
+        
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(limitLabel.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview()
         }
-
+        
         descriptionTextField.snp.makeConstraints {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview()
