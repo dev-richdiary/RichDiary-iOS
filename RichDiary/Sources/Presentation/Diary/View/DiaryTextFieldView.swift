@@ -39,12 +39,13 @@ final class DiaryTextFieldView: BaseUIView {
 
     private let descriptionLabel = UILabel()
     private let descriptionTextField = UITextField()
+    private let descriptionCountLabel = UILabel()
 
     
     // MARK: - override Func
     
     override func setUI() {
-        self.addSubviews(amountLabel, amountTextField, limitLabel, descriptionLabel, descriptionTextField)
+        self.addSubviews(amountLabel, amountTextField, limitLabel, descriptionLabel, descriptionTextField, descriptionCountLabel)
     }
 
     override func setStyle() {
@@ -69,7 +70,7 @@ final class DiaryTextFieldView: BaseUIView {
         }
         
         limitLabel.do {
-            $0.text = "최대 1억까지 입력 가능해요."
+            $0.text = "최대 1억까지 입력 가능해요"
             $0.font = .systemFont(ofSize: 12)
             $0.textColor = .systemGray2
             $0.textAlignment = .right
@@ -82,6 +83,14 @@ final class DiaryTextFieldView: BaseUIView {
         descriptionTextField.do {
             $0.borderStyle = .roundedRect
             $0.placeholder = "내용을 입력하세요"
+            $0.delegate = self
+        }
+        
+        descriptionCountLabel.do {
+            $0.text = "(0/20)"
+            $0.font = .systemFont(ofSize: 12)
+            $0.textColor = .systemGray2
+            $0.textAlignment = .right
         }
     }
 
@@ -110,6 +119,11 @@ final class DiaryTextFieldView: BaseUIView {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(44)
+        }
+        
+        descriptionCountLabel.snp.makeConstraints {
+            $0.top.equalTo(descriptionTextField.snp.bottom).offset(4)
+            $0.trailing.equalTo(descriptionTextField.snp.trailing)
             $0.bottom.equalToSuperview()
         }
     }
@@ -121,6 +135,7 @@ final class DiaryTextFieldView: BaseUIView {
 extension DiaryTextFieldView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
+        // 금액 텍스트필드일 경우 금액형태로 포맷팅 및 한도 설정
         if textField == amountTextField {
             let currentText = textField.text ?? ""
             guard let stringRange = Range(range, in: currentText) else { return false }
@@ -148,6 +163,23 @@ extension DiaryTextFieldView: UITextFieldDelegate {
             textField.text = formattedString
             
             return false
+        }
+        
+        // 내용 텍스트필드일 경우 글자 수 제한 및 현재 글자수 표기
+        if textField == descriptionTextField {
+            let currentText = textField.text ?? ""
+            guard let stringRange = Range(range, in: currentText) else { return false }
+            let newText = currentText.replacingCharacters(in: stringRange, with: string)
+            
+            // 글자 수 제한 (20자)
+            let maxLength = 20
+            if newText.count > maxLength {
+                return false
+            }
+            
+            descriptionCountLabel.text = "(\(newText.count)/\(maxLength))"
+            
+            return true
         }
         
         return true
