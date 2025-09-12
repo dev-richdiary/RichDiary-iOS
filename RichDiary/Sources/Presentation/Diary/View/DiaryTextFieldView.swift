@@ -87,9 +87,8 @@ final class DiaryTextFieldView: BaseUIView {
         }
         
         descriptionCountLabel.do {
-            $0.text = "(0/20)"
-            $0.font = .systemFont(ofSize: 12)
-            $0.textColor = .systemGray2
+            $0.attributedText = .richStyle("(0/20)", style: .custom(fontWeight: .regular, size: 12))
+            $0.textColor = .lightGray
             $0.textAlignment = .right
         }
     }
@@ -171,7 +170,7 @@ extension DiaryTextFieldView: UITextFieldDelegate {
             guard let stringRange = Range(range, in: currentText) else { return false }
             let newText = currentText.replacingCharacters(in: stringRange, with: string)
             
-            // 글자 수 제한 (20자)
+            // 글자 수 제한 20자
             let maxLength = 20
             if newText.count > maxLength {
                 return false

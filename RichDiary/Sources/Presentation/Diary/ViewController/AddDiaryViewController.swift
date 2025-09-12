@@ -50,6 +50,7 @@ final class AddDiaryViewController: BaseUIViewController {
     // 메모
     private let memoLabel = UILabel()
     private let memoTextView = UITextView()
+    private let memoCountLabel = UILabel()
 
     
     // MARK: - Life Cycle
@@ -79,7 +80,8 @@ final class AddDiaryViewController: BaseUIViewController {
             paymentSegmentedControl,
             expenseFieldsStackView,
             memoLabel,
-            memoTextView
+            memoTextView,
+            memoCountLabel
         )
     }
     
@@ -127,6 +129,12 @@ final class AddDiaryViewController: BaseUIViewController {
             $0.layer.cornerRadius = 5
             $0.textColor = .lightGray
             $0.delegate = self
+        }
+        
+        memoCountLabel.do {
+            $0.attributedText = .richStyle("(0/20)", style: .custom(fontWeight: .regular, size: 12))
+            $0.textColor = .lightGray
+            $0.textAlignment = .right
         }
     }
     
@@ -185,6 +193,11 @@ final class AddDiaryViewController: BaseUIViewController {
             $0.top.equalTo(memoLabel.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(100)
+        }
+        
+        memoCountLabel.snp.makeConstraints {
+            $0.top.equalTo(memoTextView.snp.bottom).offset(4)
+            $0.trailing.equalTo(memoTextView.snp.trailing)
             $0.bottom.equalToSuperview().inset(20)
         }
     }
@@ -291,6 +304,8 @@ extension AddDiaryViewController: UITextViewDelegate {
         if textView.text == "메모를 입력하세요 (선택)" {
             textView.text = ""
             textView.textColor = .black
+            
+            textViewDidChange(textView)
         }
     }
     
@@ -300,6 +315,23 @@ extension AddDiaryViewController: UITextViewDelegate {
         if textView.text.isEmpty {
             textView.text = "메모를 입력하세요 (선택)"
             textView.textColor = .lightGray
+            
+            textViewDidChange(textView)
         }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        let currentCount = textView.text.count
+        let maxLength = 400
+        memoCountLabel.text = "(\(currentCount)/\(maxLength))"
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let currentText = textView.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let newText = currentText.replacingCharacters(in: stringRange, with: text)
+        
+        // 400자 제한
+        return newText.count <= 400
     }
 }
