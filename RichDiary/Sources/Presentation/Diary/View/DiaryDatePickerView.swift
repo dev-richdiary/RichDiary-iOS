@@ -82,6 +82,8 @@ extension DiaryDatePickerView {
             $0.datePickerMode = .date
             $0.preferredDatePickerStyle = .wheels
             $0.locale = Locale(identifier: "ko_KR")
+            $0.maximumDate = Date()
+            $0.addTarget(self, action: #selector(datePickerValueDidChange), for: .valueChanged)
         }
         
         let toolbar = UIToolbar()
@@ -107,6 +109,14 @@ extension DiaryDatePickerView {
     @objc private func didTapDoneOnDatePicker() {
         self.date = datePicker.date
         self.endEditing(true)
+    }
+    
+    // 미래 시점으로 스크롤 할 경우 오늘 날짜로 복구
+    @objc private func datePickerValueDidChange(_ sender: UIDatePicker) {
+        if sender.date > Date() {
+            sender.setDate(Date(), animated: true)
+        }
+        self.date = sender.date
     }
 }
 
