@@ -11,7 +11,7 @@ import PackageDescription
         productTypes: [
             "Realm": .framework,
             "RealmSwift": .framework,
-            "RxRealm": .framework
+//            "RxRealm": .framework
         ]
     )
 #endif

@@ -133,7 +133,7 @@ extension DiaryTile {
         
         descriptionLabel.attributedText =
             .richStyle(
-                model.description,
+                model.diaryDescription,
                 style: .custom(
                     fontWeight: .semiBold,
                     size: 16

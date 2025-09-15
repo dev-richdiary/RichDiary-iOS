@@ -9,6 +9,7 @@ import UIKit
 
 import SnapKit
 import Then
+import RealmSwift
 
 final class AddDiaryViewController: BaseUIViewController {
     
@@ -249,7 +250,17 @@ extension AddDiaryViewController {
         let newDiary = DiaryModel(date: date, money: money, category: category, payment: payment,
                                   description: description, memo: memo, type: expenseType, diaryType: diaryType)
         
-        print("저장될 모델: \(newDiary.description), \(newDiary.money)원")
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.add(newDiary)
+                print("Realm에 데이터 저장 성공")
+                print(newDiary.description)
+            }
+        } catch {
+            print("Realm 저장 중 에러 발생: \(error)")
+        }
+        
         self.dismiss(animated: true)
     }
     

@@ -118,7 +118,7 @@ final class DiaryDetailViewController: BaseUIViewController {
         }
 
         descriptionLabel.do {
-            $0.attributedText = .richStyle("설명 : \(diary.description)", style: .custom(fontWeight: .regular, size: 21))
+            $0.attributedText = .richStyle("설명 : \(diary.diaryDescription)", style: .custom(fontWeight: .regular, size: 21))
             $0.textColor = .gray12
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
@@ -269,8 +269,4 @@ extension DiaryDetailViewController {
         // 수정 화면 전환 기능 구현 예정
         print("수정하기 버튼 탭")
     }
-}
-
-#Preview {
-    DiaryDetailViewController(diary: DiaryModel.dummy().first!)
 }

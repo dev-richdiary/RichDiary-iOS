@@ -9,13 +9,13 @@ import UIKit
 
 import SnapKit
 import Then
+import RealmSwift
 
 final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSummaryViewDelegate {
     
     // MARK: - Properties
     
-//    let dummy = DiaryModel.dummy()
-    let dummy: [DiaryModel] = []
+    private var allDiaries: [DiaryModel] = []
     private var currentDate = Date()
     
     
@@ -31,6 +31,12 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
     
     
     // MARK: - Life Cycle
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        fetchData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,7 +106,6 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         diaryStackView.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(20)
         }
         
         diaryEmptyView.snp.makeConstraints {
@@ -209,7 +214,7 @@ extension HomeViewController {
     private func updateUI(for date: Date) {
         
         // 해당 월에 맞는 데이터 필터링
-        let diariesForMonth = dummy.filter {
+        let diariesForMonth = allDiaries.filter {
             Calendar.current.isDate($0.date, equalTo: date, toGranularity: .month)
         }
         
@@ -228,6 +233,17 @@ extension HomeViewController {
             diaryStackView.isHidden = false
             diaryEmptyView.isHidden = true
             setDiaryTiles(with: diariesForMonth)
+        }
+    }
+    
+    private func fetchData() {
+        do {
+            let realm = try Realm()
+            let realmResults = realm.objects(DiaryModel.self).sorted(byKeyPath: "date", ascending: false)
+            self.allDiaries = Array(realmResults)
+            updateUI(for: currentDate)
+        } catch {
+            print("Realm 데이터 로딩 중 에러 발생: \(error)")
         }
     }
 }

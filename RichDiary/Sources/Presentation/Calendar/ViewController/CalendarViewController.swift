@@ -9,12 +9,13 @@ import UIKit
 
 import SnapKit
 import Then
+import RealmSwift
 
 final class CalendarViewController: BaseUIViewController, TabBarResettable {
     
     // MARK: - Properties
     
-    private var dummy = DiaryModel.dummy()
+    private var allDiaries: [DiaryModel] = []
     
     
     // MARK: - UI Components
@@ -27,6 +28,12 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
     
     
     // MARK: - Life Cycle
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        fetchData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -114,7 +121,7 @@ extension CalendarViewController {
             return
         }
         
-        let filteredDiaries = self.dummy.filter { diary in
+        let filteredDiaries = self.allDiaries.filter { diary in
             Calendar.current.isDate(diary.date, inSameDayAs: selectedDate)
         }
         
@@ -138,6 +145,19 @@ extension CalendarViewController {
             }
             
             diaryStackView.addArrangedSubview(tile)
+        }
+    }
+    
+    private func fetchData() {
+        do {
+            let realm = try Realm()
+            let realmResults = realm.objects(DiaryModel.self)
+            self.allDiaries = Array(realmResults)
+            
+            calendarView.reloadData(with: realmResults)
+            updateDiaryTiles(for: calendarView.selectedDate)
+        } catch {
+            print("Realm 데이터 로딩 중 에러 발생: \(error)")
         }
     }
 }
