@@ -238,9 +238,9 @@ extension HomeViewController {
     private func updateUI(for date: Date) {
         
         // 해당 월에 맞는 데이터 필터링
-        let diariesForMonth = allDiaries.filter {
-            Calendar.current.isDate($0.date, equalTo: date, toGranularity: .month)
-        }
+        let diariesForMonth = allDiaries
+            .filter { !$0.isInvalidated }
+            .filter { Calendar.current.isDate($0.date, equalTo: date, toGranularity: .month) }
         
         // 지출/수입 계산
         let totalExpense = diariesForMonth.filter { $0.diaryType == .expense }.reduce(0) { $0 + $1.money }
