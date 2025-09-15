@@ -14,7 +14,8 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
     
     // MARK: - Properties
     
-    let dummy = DiaryModel.dummy()
+//    let dummy = DiaryModel.dummy()
+    let dummy: [DiaryModel] = []
     private var currentDate = Date()
     
     
