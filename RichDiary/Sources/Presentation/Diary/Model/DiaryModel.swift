@@ -7,6 +7,8 @@
 
 import Foundation
 
+import RealmSwift
+
 enum ExpenseType: String, CaseIterable {
     case A = "A", B = "B", C = "C"
     
@@ -40,7 +42,7 @@ enum PaymentType: String, CaseIterable {
     }
 }
 
-enum DiaryType {
+enum DiaryType: String {
     case expense
     case income
 }
@@ -85,22 +87,45 @@ enum DiaryCategoryType: String, CaseIterable {
     }
 }
 
-final class DiaryModel {
-    let date: Date
-    let money: Int
-    let category: DiaryCategoryType
-    let payment: PaymentType
-    let description: String
-    let memo: String
-    let type: ExpenseType
-    let diaryType: DiaryType
+final class DiaryModel: Object {
+    @Persisted(primaryKey: true) var diaryID: ObjectId
+    @Persisted var date: Date
+    @Persisted var money: Int
+    @Persisted var diaryDescription: String
+    @Persisted var memo: String
     
-    init(date: Date, money: Int, category: DiaryCategoryType, payment: PaymentType, description: String, memo: String, type: ExpenseType, diaryType: DiaryType) {
+    @Persisted private var _category: String
+    @Persisted private var _payment: String
+    @Persisted private var _type: String
+    @Persisted private var _diaryType: String
+    
+    var category: DiaryCategoryType {
+        get { DiaryCategoryType(rawValue: _category) ?? .etc }
+        set { _category = newValue.rawValue }
+    }
+    
+    var payment: PaymentType {
+        get { PaymentType(rawValue: _payment) ?? .card }
+        set { _payment = newValue.rawValue }
+    }
+    
+    var type: ExpenseType {
+        get { ExpenseType(rawValue: _type) ?? .B }
+        set { _type = newValue.rawValue }
+    }
+    
+    var diaryType: DiaryType {
+        get { DiaryType(rawValue: _diaryType) ?? .expense }
+        set { _diaryType = newValue.rawValue }
+    }
+    
+    convenience init(date: Date, money: Int, category: DiaryCategoryType, payment: PaymentType, description: String, memo: String, type: ExpenseType, diaryType: DiaryType) {
+        self.init()
         self.date = date
         self.money = money
         self.category = category
         self.payment = payment
-        self.description = description
+        self.diaryDescription = description
         self.memo = memo
         self.type = type
         self.diaryType = diaryType
