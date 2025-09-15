@@ -19,7 +19,7 @@ final class DiaryTile: BaseUIView {
     private var model: DiaryModel?
     
     
-    //MARK: - UI Properties
+    // MARK: - UI Components
 
     private let categoryImageContainerView = UIView()
     private let categoryImageView = UIImageView()

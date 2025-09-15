@@ -27,6 +27,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
     private let summaryView = HomeSummaryView()
     private let separator = UIView()
     private let diaryStackView = UIStackView()
+    private let diaryEmptyView = DiaryEmptyView()
     
     
     // MARK: - Life Cycle
@@ -44,7 +45,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
     override func setUI() {
         self.view.addSubviews(headerView, scrollview)
         scrollview.addSubview(contentView)
-        contentView.addSubviews(summaryView, separator, diaryStackView)
+        contentView.addSubviews(summaryView, separator, diaryEmptyView, diaryStackView)
     }
     
     override func setStyle() {
@@ -99,7 +100,14 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         diaryStackView.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(20)
+        }
+        
+        diaryEmptyView.snp.makeConstraints {
+            $0.top.equalTo(separator.snp.bottom).offset(20)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(350)
+            $0.bottom.equalToSuperview().inset(40)
         }
     }
     
@@ -211,8 +219,16 @@ extension HomeViewController {
         let goal = 2_000_000 // 목표 금액은 일단 고정
         
         summaryView.configure(date: date, expense: totalExpense, income: totalIncome, goal: goal)
-        
-        setDiaryTiles(with: diariesForMonth)
+                
+        if diariesForMonth.isEmpty {
+            diaryStackView.isHidden = true
+            diaryEmptyView.isHidden = false
+            diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        } else {
+            diaryStackView.isHidden = false
+            diaryEmptyView.isHidden = true
+            setDiaryTiles(with: diariesForMonth)
+        }
     }
 }
 

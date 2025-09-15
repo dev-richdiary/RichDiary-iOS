@@ -84,7 +84,7 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
         diaryStackView.snp.makeConstraints {
             $0.top.equalTo(calendarView.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(20)
         }
     }
     
