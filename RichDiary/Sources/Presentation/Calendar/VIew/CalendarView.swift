@@ -9,6 +9,7 @@ import UIKit
 
 import SnapKit
 import Then
+import RealmSwift
 
 final class CalendarView: BaseUIView {
     
@@ -21,7 +22,7 @@ final class CalendarView: BaseUIView {
     }
     
     let dayOfTheWeek = ["일", "월", "화", "수", "목", "금", "토"]
-    let diaryList = DiaryModel.dummy()
+    private var diaryList: Results<DiaryModel>?
     
     private var currentDate = Date() {
         didSet { reloadCalendar() }
@@ -29,7 +30,7 @@ final class CalendarView: BaseUIView {
     private var days: [Date?] = []
     private var diaryDates: Set<DateComponents> = []
     
-    private var selectedDate: Date? {
+    var selectedDate: Date? {
         didSet {
             onDateSelected?(selectedDate)
             calendarCollectionView.reloadData()
@@ -52,6 +53,7 @@ final class CalendarView: BaseUIView {
         formatter.dateFormat = "yyyy"
         return formatter
     }()
+    
     
     // MARK: - UI Components
     
@@ -185,10 +187,20 @@ final class CalendarView: BaseUIView {
         }
     }
     
+    public func reloadData(with diaries: Results<DiaryModel>) {
+        self.diaryList = diaries
+        prepareDiaryDates()
+        reloadCalendar()
+    }
     
     // MARK: - Private Func
     
     private func prepareDiaryDates() {
+        guard let diaryList = diaryList else {
+            diaryDates = []
+            return
+        }
+        
         let calendar = Calendar.current
         diaryDates = Set(diaryList.map { calendar.dateComponents([.year, .month, .day], from: $0.date) })
     }
