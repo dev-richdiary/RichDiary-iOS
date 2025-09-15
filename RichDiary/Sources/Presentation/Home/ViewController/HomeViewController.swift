@@ -18,6 +18,8 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
     private var allDiaries: [DiaryModel] = []
     private var currentDate = Date()
     
+    private var diaryStackViewBottomConstraint: Constraint?
+    private var diaryEmptyViewBottomConstraint: Constraint?
     
     // MARK: - UI Components
     
@@ -42,7 +44,6 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         super.viewDidLoad()
         
         summaryView.delegate = self
-        updateUI(for: currentDate)
     }
     
     
@@ -106,13 +107,17 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         diaryStackView.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom).offset(10)
             $0.horizontalEdges.equalToSuperview()
+            
+            self.diaryStackViewBottomConstraint = $0.bottom.equalToSuperview().inset(40).constraint
+            self.diaryStackViewBottomConstraint?.deactivate()
         }
         
         diaryEmptyView.snp.makeConstraints {
             $0.top.equalTo(separator.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(350)
-            $0.bottom.equalToSuperview().inset(40)
+            
+            self.diaryEmptyViewBottomConstraint = $0.bottom.equalToSuperview().inset(40).constraint
         }
     }
     
@@ -177,10 +182,9 @@ extension HomeViewController {
             return Calendar.current.startOfDay(for: model.date)
         }
         
-        let sortedDates = groupedByDate.keys.sorted(by: >)
+        let sortedDates: [Date] = groupedByDate.keys.sorted(by: >)
         
-        sortedDates.forEach { date in
-            // 날짜 헤더 추가
+        for date in sortedDates {
             let header = createDateHeaderLabel(for: date)
             diaryStackView.addArrangedSubview(header)
             
@@ -188,26 +192,46 @@ extension HomeViewController {
                 $0.height.equalTo(40)
             }
             
-            // 해당 날짜의 다이어리 타일들 추가
             if let diariesForDate = groupedByDate[date] {
-                diariesForDate.forEach { model in
+                let validDiariesForDate = diariesForDate.filter { !$0.isInvalidated }
+                
+                for model in validDiariesForDate {
                     let tile = DiaryTile()
                     tile.configure(with: model)
                     tile.snp.makeConstraints {
                         $0.height.equalTo(72)
                     }
                     
-                    tile.onTap = { [weak self] in
-                        let detailVC = DiaryDetailViewController(diary: model)
-                        detailVC.modalPresentationStyle = .overFullScreen
-                        detailVC.modalTransitionStyle = .crossDissolve
-                        self?.present(detailVC, animated: true)
+                    tile.onTap = { [weak self] diaryID in
+                        guard let self = self else { return }
+                        
+                        do {
+                            let realm = try Realm()
+                            if let liveDiary = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryID) {
+                                let detailVC = DiaryDetailViewController(diary: liveDiary)
+                                detailVC.modalPresentationStyle = .overFullScreen
+                                detailVC.modalTransitionStyle = .crossDissolve
+                                self.present(detailVC, animated: true)
+                            } else {
+                                // 해당 ID의 일기가 삭제되었거나 찾을 수 없을 경우
+                                print("오류: ID(\(diaryID))를 가진 일기를 찾을 수 없습니다. 이미 삭제되었을 수 있습니다.")
+                                let alert = UIAlertController(title: "알림", message: "해당 일기가 삭제되었거나 찾을 수 없습니다.", preferredStyle: .alert)
+                                alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+                                    self.fetchData()
+                                })
+                                self.present(alert, animated: true, completion: nil)
+                            }
+                        } catch {
+                            print("Realm 조회 중 에러 발생: \(error)")
+                            let alert = UIAlertController(title: "오류", message: "데이터 로딩 중 문제가 발생했습니다.", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+                            self.present(alert, animated: true, completion: nil)
+                        }
                     }
                     
                     diaryStackView.addArrangedSubview(tile)
                 }
             }
-            
         }
     }
     
@@ -224,16 +248,26 @@ extension HomeViewController {
         let goal = 2_000_000 // TODO: - 목표 금액은 일단 고정, 추후 목표 금액 세팅 기능 구현 예정
         
         summaryView.configure(date: date, expense: totalExpense, income: totalIncome, goal: goal)
-                
+        
         if diariesForMonth.isEmpty {
             diaryStackView.isHidden = true
             diaryEmptyView.isHidden = false
+            
+            self.diaryEmptyViewBottomConstraint?.activate()
+            self.diaryStackViewBottomConstraint?.deactivate()
+            
             diaryStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         } else {
             diaryStackView.isHidden = false
             diaryEmptyView.isHidden = true
+            
+            self.diaryStackViewBottomConstraint?.activate()
+            self.diaryEmptyViewBottomConstraint?.deactivate()
+            
             setDiaryTiles(with: diariesForMonth)
         }
+        
+        view.layoutIfNeeded()
     }
     
     private func fetchData() {

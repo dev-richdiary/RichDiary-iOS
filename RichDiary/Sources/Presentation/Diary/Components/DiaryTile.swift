@@ -9,14 +9,15 @@ import UIKit
 
 import SnapKit
 import Then
+import RealmSwift
 
 final class DiaryTile: BaseUIView {
 
     //MARK: - Properties
 
-    var onTap: (() -> Void)?
+    var onTap: ((ObjectId) -> Void)?
     
-    private var model: DiaryModel?
+    private var currentDiaryID: ObjectId?
     
     
     // MARK: - UI Components
@@ -104,9 +105,56 @@ final class DiaryTile: BaseUIView {
     }
     
     func configure(with model: DiaryModel) {
-        self.model = model
-        bindData()
-    }
+            guard !model.isInvalidated else {
+                print("잘못된 DiaryModel이 전달됨. ID: \(model.diaryID)")
+                self.currentDiaryID = nil
+                return
+            }
+            
+            self.currentDiaryID = model.diaryID
+            
+            if model.category == .salary {
+                categoryImageView.image = UIImage(resource: .iconSaving)
+            } else {
+                categoryImageView.image = UIImage(named: "icon_\(model.category)") ?? UIImage(resource: .iconEtc)
+            }
+            
+            if model.type == .C {
+                categoryImageContainerView.backgroundColor = .primaryRed
+            } else if model.type == .B {
+                categoryImageContainerView.backgroundColor = .primaryOrange
+            } else {
+                categoryImageContainerView.backgroundColor = .primaryLight
+            }
+
+            descriptionLabel.attributedText =
+                .richStyle(
+                    model.diaryDescription,
+                    style: .custom(
+                        fontWeight: .semiBold,
+                        size: 16
+                    )
+                )
+            
+            categoryLabel.attributedText =
+                .richStyle(
+                    model.category.description,
+                    style: .custom(
+                        fontWeight: .regular,
+                        size: 14
+                    )
+                )
+            
+            moneyLabel.attributedText =
+                .richStyle(
+                    model.diaryType == .expense ? "- \(model.money.asCurrencyString)" : "+ \(model.money.asCurrencyString)",
+                    style: .custom(
+                        fontWeight: .semiBold,
+                        size: 16
+                    )
+                )
+            moneyLabel.textColor = (model.diaryType == .expense) ? .black : .primaryLight
+        }
     
 }
 
@@ -114,52 +162,6 @@ final class DiaryTile: BaseUIView {
 //MARK: - Private Func
 
 extension DiaryTile {
-    private func bindData() {
-        guard let model = model else { return }
-        
-        if model.category == .salary {
-            categoryImageView.image = UIImage(resource: .iconSaving)
-        } else {
-            categoryImageView.image = UIImage(named: "icon_\(model.category)") ?? UIImage(resource: .iconEtc)
-        }
-        
-        if model.type == .C {
-            categoryImageContainerView.backgroundColor = .primaryRed
-        } else if model.type == .B {
-            categoryImageContainerView.backgroundColor = .primaryOrange
-        } else {
-            categoryImageContainerView.backgroundColor = .primaryLight
-        }
-        
-        descriptionLabel.attributedText =
-            .richStyle(
-                model.diaryDescription,
-                style: .custom(
-                    fontWeight: .semiBold,
-                    size: 16
-                )
-            )
-        
-        categoryLabel.attributedText =
-            .richStyle(
-                model.category.description,
-                style: .custom(
-                    fontWeight: .regular,
-                    size: 14
-                )
-            )
-        
-        moneyLabel.attributedText =
-            .richStyle(
-                model.diaryType == .expense ? "- \(model.money.asCurrencyString)" : "+ \(model.money.asCurrencyString)",
-                style: .custom(
-                    fontWeight: .semiBold,
-                    size: 16
-                )
-            )
-        moneyLabel.textColor = (model.diaryType == .expense) ? .black : .primaryLight
-    }
-    
     private func setGesture() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTap))
         addGestureRecognizer(tap)
@@ -167,6 +169,8 @@ extension DiaryTile {
     }
     
     @objc private func didTap() {
-        onTap?()
+        if let id = currentDiaryID {
+            onTap?(id)
+        }
     }
 }
