@@ -221,7 +221,7 @@ extension HomeViewController {
         // 지출/수입 계산
         let totalExpense = diariesForMonth.filter { $0.diaryType == .expense }.reduce(0) { $0 + $1.money }
         let totalIncome = diariesForMonth.filter { $0.diaryType == .income }.reduce(0) { $0 + $1.money }
-        let goal = 2_000_000 // 목표 금액은 일단 고정
+        let goal = 2_000_000 // TODO: - 목표 금액은 일단 고정, 추후 목표 금액 세팅 기능 구현 예정
         
         summaryView.configure(date: date, expense: totalExpense, income: totalIncome, goal: goal)
                 

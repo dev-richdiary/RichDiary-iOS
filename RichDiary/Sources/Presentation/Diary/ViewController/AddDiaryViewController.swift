@@ -255,7 +255,6 @@ extension AddDiaryViewController {
             try realm.write {
                 realm.add(newDiary)
                 print("Realm에 데이터 저장 성공")
-                print(newDiary.description)
             }
         } catch {
             print("Realm 저장 중 에러 발생: \(error)")
