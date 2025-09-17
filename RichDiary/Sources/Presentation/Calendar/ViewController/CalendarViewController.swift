@@ -65,6 +65,19 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
     }
     
     override func setStyle() {
+        headerView.do {
+            $0.onTapHelpButton = { [weak self] in
+                let helpVC = HelpViewController()
+                self?.navigationItem.backButtonTitle = "캘린더"
+                self?.navigationController?.pushViewController(helpVC, animated: true)
+            }
+            
+//            $0.onTapNoticeButton = { [weak self] in
+//                let noticeVC = NoticeViewController()
+//                self?.navigationController?.pushViewController(noticeVC, animated: true)
+//            }
+        }
+        
         scrollview.do {
             $0.showsVerticalScrollIndicator = false
             $0.backgroundColor = .white
