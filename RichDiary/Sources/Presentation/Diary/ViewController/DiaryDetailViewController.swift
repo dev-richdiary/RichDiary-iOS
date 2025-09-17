@@ -215,10 +215,6 @@ extension DiaryDetailViewController {
         backgroundView.addGestureRecognizer(tapGesture)
     }
     
-    @objc private func dismissSelf() {
-        dismiss(animated: false)
-    }
-    
     private func loadDiaryAndConfigureUI() {
         do {
             let realm = try Realm()
@@ -273,6 +269,15 @@ extension DiaryDetailViewController {
             self.present(alert, animated: true, completion: nil)
         }
     }
+}
+
+
+//MARK: - Button Actions
+
+extension DiaryDetailViewController {
+    @objc private func dismissSelf() {
+        dismiss(animated: false)
+    }
     
     @objc private func deleteButtonTapped() {
         print("삭제하기 버튼 탭")
@@ -308,7 +313,7 @@ extension DiaryDetailViewController {
         print("수정하기 버튼 탭")
         
         guard let diaryToEdit = currentDiary, !diaryToEdit.isInvalidated else {
-            print("수정할 일기 객체가 유효하지 않습니다.")
+            print("수정할 다이어리 객체가 유효하지 않음.")
             
             let alert = UIAlertController(title: "알림", message: "가계부 정보를 찾을 수 없습니다.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
@@ -316,6 +321,9 @@ extension DiaryDetailViewController {
             return
         }
         
-        // TODO: - 가계부 수정 로직 -> 수정화면 이동
+        let editVC = AddDiaryViewController(existingDiaryId: diaryToEdit.diaryID)
+        let navController = UINavigationController(rootViewController: editVC)
+                
+        self.present(navController, animated: true, completion: nil)
     }
 }
