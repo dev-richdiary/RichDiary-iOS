@@ -208,7 +208,7 @@ extension HomeViewController {
                         do {
                             let realm = try Realm()
                             if let liveDiary = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryID) {
-                                let detailVC = DiaryDetailViewController(diary: liveDiary)
+                                let detailVC = DiaryDetailViewController(diaryId: liveDiary.diaryID)
                                 detailVC.modalPresentationStyle = .overFullScreen
                                 detailVC.modalTransitionStyle = .crossDissolve
                                 self.present(detailVC, animated: true)

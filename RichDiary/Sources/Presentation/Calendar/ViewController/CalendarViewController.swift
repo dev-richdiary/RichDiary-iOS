@@ -149,7 +149,7 @@ extension CalendarViewController {
                         let realm = try Realm()
                         // ✅ DiaryDetailViewController로 넘겨주기 전에 Realm에서 객체를 다시 조회
                         if let liveDiary = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryID) {
-                            let detailVC = DiaryDetailViewController(diary: liveDiary)
+                            let detailVC = DiaryDetailViewController(diaryId: liveDiary.diaryID)
                             detailVC.modalPresentationStyle = .overFullScreen
                             detailVC.modalTransitionStyle = .crossDissolve
                             self.present(detailVC, animated: true)
