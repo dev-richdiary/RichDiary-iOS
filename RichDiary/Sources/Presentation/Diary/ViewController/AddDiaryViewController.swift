@@ -11,7 +11,7 @@ import SnapKit
 import Then
 import RealmSwift
 
-enum AddDiaryViewControllerrType {
+enum AddDiaryViewControllerType {
     case add    // 가계부 새로 작성
     case edit   // 가계부 수정
 }
@@ -239,7 +239,7 @@ final class AddDiaryViewController: BaseUIViewController {
         }
     }
     
-    func setNavigationBar(for mode: AddDiaryViewControllerrType) {
+    func setNavigationBar(for mode: AddDiaryViewControllerType) {
         switch mode {
         case .add:
             self.title = "가계부 작성"
