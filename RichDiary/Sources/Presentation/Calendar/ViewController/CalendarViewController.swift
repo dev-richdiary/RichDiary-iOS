@@ -193,7 +193,3 @@ extension CalendarViewController {
             }
         }
 }
-
-#Preview {
-    TabBarViewController()
-}

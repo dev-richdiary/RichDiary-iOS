@@ -281,7 +281,3 @@ extension HomeViewController {
         }
     }
 }
-
-#Preview {
-    TabBarViewController()
-}
