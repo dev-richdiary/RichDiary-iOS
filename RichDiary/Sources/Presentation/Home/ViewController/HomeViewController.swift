@@ -197,7 +197,9 @@ extension HomeViewController {
                 
                 for model in validDiariesForDate {
                     let tile = DiaryTile()
+                    
                     tile.configure(with: model)
+                    
                     tile.snp.makeConstraints {
                         $0.height.equalTo(72)
                     }

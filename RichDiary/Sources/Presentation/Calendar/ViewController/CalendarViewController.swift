@@ -41,6 +41,20 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
         setupCalendarViewHandlers()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // 모든 다이어리 데이터 배열 초기화
+        self.allDiaries = []
+        
+        // diaryStackView의 모든 서브뷰 제거 및 비우기
+        diaryStackView.arrangedSubviews.forEach {
+            diaryStackView.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
+        
+    }
+    
     
     //MARK: - Func
     
@@ -133,7 +147,9 @@ extension CalendarViewController {
             
             for model in validFilteredDiaries {
                 let tile = DiaryTile()
+                
                 tile.configure(with: model)
+                
                 tile.snp.makeConstraints {
                     $0.height.equalTo(72)
                 }
@@ -173,7 +189,7 @@ extension CalendarViewController {
             do {
                 let realm = try Realm()
                 let realmResults = realm.objects(DiaryModel.self)
-                self.allDiaries = Array(realmResults)
+                self.allDiaries = Array(realmResults).sorted(by: { $1.date < $0.date })
                 
                 calendarView.reloadData(with: realmResults)
                 updateDiaryTiles(for: calendarView.selectedDate)
