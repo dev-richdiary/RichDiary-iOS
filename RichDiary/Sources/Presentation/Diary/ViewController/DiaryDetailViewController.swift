@@ -284,23 +284,22 @@ extension DiaryDetailViewController {
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             
-            dismissSelf()
-
-            do {
-                let realm = try Realm()
-                
-                if let objectToDelete = realm.object(ofType: DiaryModel.self, forPrimaryKey: idToDelete) {
-                    try realm.write {
-                        realm.delete(objectToDelete)
-                        print("Realm에서 가계부 삭제 성공 (ID: \(idToDelete))")
+            self.dismiss(animated: true) {
+                do {
+                    let realm = try Realm()
+                    
+                    if let objectToDelete = realm.object(ofType: DiaryModel.self, forPrimaryKey: idToDelete) {
+                        try realm.write {
+                            realm.delete(objectToDelete)
+                            print("Realm에서 가계부 삭제 성공 (ID: \(idToDelete))")
+                        }
+                    } else {
+                        print("삭제할 가계부를 찾을 수 없습니다. (ID: \(idToDelete)) 이미 삭제되었을 수 있습니다.")
                     }
-                } else {
-                    print("삭제할 가계부를 찾을 수 없습니다. (ID: \(idToDelete)) 이미 삭제되었을 수 있습니다.")
+                } catch {
+                    print("Realm 삭제 중 에러 발생: \(error)")
                 }
-            } catch {
-                print("Realm 삭제 중 에러 발생: \(error)")
             }
-
         })
         self.present(alert, animated: true, completion: nil)
     }
