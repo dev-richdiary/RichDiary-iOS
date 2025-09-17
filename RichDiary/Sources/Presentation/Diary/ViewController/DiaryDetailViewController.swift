@@ -9,6 +9,7 @@ import UIKit
 
 import SnapKit
 import Then
+import RealmSwift
 
 final class DiaryDetailViewController: BaseUIViewController {
     
@@ -261,8 +262,19 @@ extension DiaryDetailViewController {
     }
     
     @objc private func deleteButtonTapped() {
-        // 삭제 기능 구현 예정
         print("삭제하기 버튼 탭")
+        dismissSelf()
+        
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.delete(diary)
+                print("Realm에서 가계부 삭제 성공")
+            }
+        } catch {
+            print("Realm 저장 중 에러 발생: \(error)")
+        }
+        
     }
 
     @objc private func editButtonTapped() {
