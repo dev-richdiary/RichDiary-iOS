@@ -5,9 +5,10 @@ let project = Project(
     targets: [
         .target(
             name: "RichDiary",
-            destinations: .iOS,
+            destinations: [.iPhone],
             product: .app,
             bundleId: "io.tuist.RichDiary",
+            deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(
                 with: [
                     "UILaunchStoryboardName": "LaunchScreen",
@@ -30,7 +31,11 @@ let project = Project(
                         "Pretendard-Medium.otf",
                         "Pretendard-Regular.otf",
                         "Pretendard-SemiBold.otf"
-                    ]
+                    ],
+                    "UIUserInterfaceStyle": "Light",
+                    "UISupportedInterfaceOrientations": [
+                        "UIInterfaceOrientationPortrait"
+                    ],
                 ]
             ),
             sources: ["RichDiary/Sources/**"],

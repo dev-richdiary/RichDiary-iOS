@@ -126,6 +126,18 @@ final class DiaryTextFieldView: BaseUIView {
             $0.bottom.equalToSuperview()
         }
     }
+    
+    
+    // MARK: - Func
+
+    public func configure(with money: Int, description: String) {
+        let formattedString = numberFormatter.string(from: NSNumber(value: money))
+        amountTextField.text = formattedString
+        
+        descriptionTextField.text = description
+        let maxLength = 20
+        descriptionCountLabel.text = "(\(description.count)/\(maxLength))"
+    }
 }
 
 

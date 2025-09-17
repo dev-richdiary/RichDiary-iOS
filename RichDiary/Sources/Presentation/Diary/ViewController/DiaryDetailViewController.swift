@@ -9,12 +9,15 @@ import UIKit
 
 import SnapKit
 import Then
+import RealmSwift
 
 final class DiaryDetailViewController: BaseUIViewController {
     
     //MARK: - Properties
 
-    private let diary: DiaryModel
+    private let diaryId: ObjectId
+    
+    private var currentDiary: DiaryModel?
     
     
     // MARK: - UI Components
@@ -38,8 +41,8 @@ final class DiaryDetailViewController: BaseUIViewController {
     
     // MARK: - init
 
-    init(diary: DiaryModel) {
-        self.diary = diary
+    init(diaryId: ObjectId) {
+        self.diaryId = diaryId
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -54,8 +57,8 @@ final class DiaryDetailViewController: BaseUIViewController {
         super.viewDidLoad()
         
         setGesture()
+        loadDiaryAndConfigureUI()
     }
-    
     
     //MARK: - Func
     
@@ -74,16 +77,6 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.layer.cornerRadius = 20
         }
         
-        typeLabel.do {
-            $0.attributedText = .richStyle(diary.type.rawValue, style: .custom(fontWeight: .bold, size: 80))
-            $0.textColor = diary.type == .C ? .red : .gray12
-        }
-
-        typeDescriptionLabel.do {
-            $0.attributedText = .richStyle("\(diary.type.description) 지출", style: .custom(fontWeight: .regular, size: 20))
-            $0.textColor = .gray
-        }
-        
         dismissButton.do {
             $0.setTitle("✕ 닫기", for: .normal)
             $0.setTitleColor(.gray12, for: .normal)
@@ -92,43 +85,9 @@ final class DiaryDetailViewController: BaseUIViewController {
             $0.configuration = .plain()
             $0.addTarget(self, action: #selector(dismissSelf), for: .touchUpInside)
         }
-
-        moneyLabel.do {
-            $0.attributedText = .richStyle("금액 : \(diary.money.asCurrencyString)", style: .custom(fontWeight: .medium, size: 25))
-            $0.textColor = .gray12
-        }
-
+        
         separatorView.do {
             $0.backgroundColor = .gray
-        }
-
-        dateLabel.do {
-            $0.attributedText = .richStyle("날짜 : \(diary.date.formattedWithWeekday())", style: .custom(fontWeight: .regular, size: 21))
-            $0.textColor = .gray12
-        }
-
-        categoryLabel.do {
-            $0.attributedText = .richStyle("카테고리 : \(diary.category.description)", style: .custom(fontWeight: .regular, size: 21))
-            $0.textColor = .gray12
-        }
-
-        paymentLabel.do {
-            $0.attributedText = .richStyle("결제수단 : \(diary.payment.description)", style: .custom(fontWeight: .regular, size: 21))
-            $0.textColor = .gray12
-        }
-
-        descriptionLabel.do {
-            $0.attributedText = .richStyle("설명 : \(diary.diaryDescription)", style: .custom(fontWeight: .regular, size: 21))
-            $0.textColor = .gray12
-            $0.numberOfLines = 0
-            $0.lineBreakMode = .byWordWrapping
-        }
-
-        memoLabel.do {
-            $0.attributedText = .richStyle("메모 : \(diary.memo)", style: .custom(fontWeight: .regular, size: 18))
-            $0.textColor = .gray12
-            $0.numberOfLines = 0
-            $0.lineBreakMode = .byWordWrapping
         }
         
         deleteButton.do {
@@ -256,17 +215,115 @@ extension DiaryDetailViewController {
         backgroundView.addGestureRecognizer(tapGesture)
     }
     
+    private func loadDiaryAndConfigureUI() {
+        do {
+            let realm = try Realm()
+            
+            guard let diary = realm.object(ofType: DiaryModel.self, forPrimaryKey: self.diaryId) else {
+                print("ID(\(self.diaryId)) 가계부 로드 에러")
+                
+                let alert = UIAlertController(title: "알림", message: "해당 일기가 삭제되었거나 찾을 수 없습니다.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+                    self?.dismiss(animated: true)
+                })
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+            self.currentDiary = diary
+            
+            typeLabel.attributedText = .richStyle(diary.type.rawValue, style: .custom(fontWeight: .bold, size: 80))
+            typeLabel.textColor = diary.type == .C ? .red : .gray12
+            
+            typeDescriptionLabel.attributedText = .richStyle("\(diary.type.description) 지출", style: .custom(fontWeight: .regular, size: 20))
+            typeDescriptionLabel.textColor = .gray
+            
+            moneyLabel.attributedText = .richStyle("금액 : \(diary.money.asCurrencyString)", style: .custom(fontWeight: .medium, size: 25))
+            moneyLabel.textColor = .gray12
+            
+            dateLabel.attributedText = .richStyle("날짜 : \(diary.date.formattedWithWeekday())", style: .custom(fontWeight: .regular, size: 21))
+            dateLabel.textColor = .gray12
+            
+            categoryLabel.attributedText = .richStyle("카테고리 : \(diary.category.description)", style: .custom(fontWeight: .regular, size: 21))
+            categoryLabel.textColor = .gray12
+            
+            paymentLabel.attributedText = .richStyle("결제수단 : \(diary.payment.description)", style: .custom(fontWeight: .regular, size: 21))
+            paymentLabel.textColor = .gray12
+            
+            descriptionLabel.attributedText = .richStyle("설명 : \(diary.diaryDescription)", style: .custom(fontWeight: .regular, size: 21))
+            descriptionLabel.textColor = .gray12
+            descriptionLabel.numberOfLines = 0
+            descriptionLabel.lineBreakMode = .byWordWrapping
+            
+            memoLabel.attributedText = .richStyle("메모 : \(diary.memo)", style: .custom(fontWeight: .regular, size: 18))
+            memoLabel.textColor = .gray12
+            memoLabel.numberOfLines = 0
+            memoLabel.lineBreakMode = .byWordWrapping
+            
+        } catch {
+            print("Realm 데이터 로딩 중 에러 발생: \(error)")
+            
+            let alert = UIAlertController(title: "오류", message: "데이터 로딩 중 문제가 발생했습니다.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+                self?.dismiss(animated: true)
+            })
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+}
+
+
+//MARK: - Button Actions
+
+extension DiaryDetailViewController {
     @objc private func dismissSelf() {
         dismiss(animated: false)
     }
     
     @objc private func deleteButtonTapped() {
-        // 삭제 기능 구현 예정
         print("삭제하기 버튼 탭")
+        
+        let idToDelete = self.diaryId
+        
+        let alert = UIAlertController(title: "가계부 삭제", message: "정말로 삭제하시겠습니까?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.dismiss(animated: true) {
+                do {
+                    let realm = try Realm()
+                    
+                    if let objectToDelete = realm.object(ofType: DiaryModel.self, forPrimaryKey: idToDelete) {
+                        try realm.write {
+                            realm.delete(objectToDelete)
+                            print("Realm에서 가계부 삭제 성공 (ID: \(idToDelete))")
+                        }
+                    } else {
+                        print("삭제할 가계부를 찾을 수 없습니다. (ID: \(idToDelete)) 이미 삭제되었을 수 있습니다.")
+                    }
+                } catch {
+                    print("Realm 삭제 중 에러 발생: \(error)")
+                }
+            }
+        })
+        self.present(alert, animated: true, completion: nil)
     }
 
     @objc private func editButtonTapped() {
-        // 수정 화면 전환 기능 구현 예정
         print("수정하기 버튼 탭")
+        
+        guard let diaryToEdit = currentDiary, !diaryToEdit.isInvalidated else {
+            print("수정할 다이어리 객체가 유효하지 않음.")
+            
+            let alert = UIAlertController(title: "알림", message: "가계부 정보를 찾을 수 없습니다.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
+        
+        let editVC = AddDiaryViewController(existingDiaryId: diaryToEdit.diaryID)
+        let navController = UINavigationController(rootViewController: editVC)
+                
+        self.present(navController, animated: true, completion: nil)
     }
 }

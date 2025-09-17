@@ -197,7 +197,9 @@ extension HomeViewController {
                 
                 for model in validDiariesForDate {
                     let tile = DiaryTile()
+                    
                     tile.configure(with: model)
+                    
                     tile.snp.makeConstraints {
                         $0.height.equalTo(72)
                     }
@@ -208,7 +210,7 @@ extension HomeViewController {
                         do {
                             let realm = try Realm()
                             if let liveDiary = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryID) {
-                                let detailVC = DiaryDetailViewController(diary: liveDiary)
+                                let detailVC = DiaryDetailViewController(diaryId: liveDiary.diaryID)
                                 detailVC.modalPresentationStyle = .overFullScreen
                                 detailVC.modalTransitionStyle = .crossDissolve
                                 self.present(detailVC, animated: true)
@@ -280,8 +282,4 @@ extension HomeViewController {
             print("Realm 데이터 로딩 중 에러 발생: \(error)")
         }
     }
-}
-
-#Preview {
-    TabBarViewController()
 }
