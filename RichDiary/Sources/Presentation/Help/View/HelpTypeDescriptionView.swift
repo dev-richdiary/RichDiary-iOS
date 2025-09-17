@@ -75,6 +75,6 @@ final class HelpTypeDescriptionView: BaseUIView {
     func configure(type: String, title: String, description: String, backgroundColor: UIColor) {
         headerView.backgroundColor = backgroundColor
         typeLabel.attributedText = .richStyle("\(type) - \(title)", style: .custom(fontWeight: .bold, size: 22))
-        descriptionLabel.attributedText = .richStyle(description, style: .custom(fontWeight: .medium, size: 18))
+        descriptionLabel.attributedText = .richStyle(description, style: .custom(fontWeight: .regular, size: 18))
     }
 }

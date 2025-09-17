@@ -21,7 +21,7 @@ final class HelpViewController: BaseUIViewController {
     private let typeAView = HelpTypeDescriptionView()
     private let typeBView = HelpTypeDescriptionView()
     private let typeCView = HelpTypeDescriptionView()
-    
+    private let colorDescriptionView = HelpColorDescriptionView()
     
     //MARK: - Life Cycle
 
@@ -37,7 +37,7 @@ final class HelpViewController: BaseUIViewController {
     override func setUI() {
         self.view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubviews(mainTitleLabel, descriptionStackView)
+        contentView.addSubviews(mainTitleLabel, descriptionStackView, colorDescriptionView)
         descriptionStackView.addArrangedSubviews(typeAView, typeBView, typeCView)
     }
     
@@ -89,6 +89,11 @@ final class HelpViewController: BaseUIViewController {
         
         descriptionStackView.snp.makeConstraints {
             $0.top.equalTo(mainTitleLabel.snp.bottom).offset(30)
+            $0.horizontalEdges.equalToSuperview().inset(20)
+        }
+        
+        colorDescriptionView.snp.makeConstraints {
+            $0.top.equalTo(descriptionStackView.snp.bottom).offset(20)
             $0.horizontalEdges.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(30)
         }
