@@ -23,6 +23,15 @@ final class HelpViewController: BaseUIViewController {
     private let typeCView = HelpTypeDescriptionView()
     
     
+    //MARK: - Life Cycle
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController?.navigationBar.tintColor = .white
+    }
+    
+
     //MARK: - Override Func
     
     override func setUI() {
@@ -33,7 +42,7 @@ final class HelpViewController: BaseUIViewController {
     }
     
     override func setStyle() {
-        self.view.backgroundColor = .gray8
+        self.view.backgroundColor = .gray11
         
         mainTitleLabel.do {
             $0.attributedText = .richStyle("소비 타입 도움말", style: .custom(fontWeight: .bold, size: 28))
@@ -74,14 +83,14 @@ final class HelpViewController: BaseUIViewController {
         }
         
         mainTitleLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(20)
+            $0.top.equalToSuperview()
             $0.horizontalEdges.equalToSuperview().inset(20)
         }
         
         descriptionStackView.snp.makeConstraints {
             $0.top.equalTo(mainTitleLabel.snp.bottom).offset(30)
             $0.horizontalEdges.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview().inset(20)
+            $0.bottom.equalToSuperview().inset(30)
         }
     }
     

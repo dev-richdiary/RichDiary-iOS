@@ -40,12 +40,6 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         fetchData()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        summaryView.delegate = self
-    }
-    
     
     //MARK: - Func
     
@@ -56,11 +50,28 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
     }
     
     override func setStyle() {
+        headerView.do {
+            $0.onTapHelpButton = { [weak self] in
+                let helpVC = HelpViewController()
+                self?.navigationItem.backButtonTitle = "홈"
+                self?.navigationController?.pushViewController(helpVC, animated: true)
+            }
+            
+//            $0.onTapNoticeButton = { [weak self] in
+//                let noticeVC = NoticeViewController()
+//                self?.navigationController?.pushViewController(noticeVC, animated: true)
+//            }
+        }
+        
         scrollview.do {
             $0.showsVerticalScrollIndicator = false
             $0.backgroundColor = .white
             $0.layer.cornerRadius = 40
             $0.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
+        }
+        
+        summaryView.do {
+            $0.delegate = self
         }
         
         separator.do {
