@@ -30,7 +30,8 @@ let project = Project(
                         "Pretendard-Medium.otf",
                         "Pretendard-Regular.otf",
                         "Pretendard-SemiBold.otf"
-                    ]
+                    ],
+                    "UIUserInterfaceStyle": "Light"
                 ]
             ),
             sources: ["RichDiary/Sources/**"],
