@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import Then
 
-final class HelpColorDescriptionView: BaseUIView { // 또는 UIView
+final class HelpColorDescriptionView: BaseUIView {
     
     // MARK: - UI Components
     
@@ -19,7 +19,7 @@ final class HelpColorDescriptionView: BaseUIView { // 또는 UIView
     private let categoryStackView = UIStackView()
     
     
-    // MARK: - override Func
+    // MARK: - Override Func
     
     override func setUI() {
         self.addSubview(containerView)
