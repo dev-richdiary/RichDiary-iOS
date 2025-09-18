@@ -79,7 +79,7 @@ final class DiaryTile: BaseUIView {
     override func setLayout() {
         categoryImageContainerView.snp.makeConstraints {
             $0.size.equalTo(40)
-            $0.left.equalToSuperview().offset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.centerY.equalToSuperview()
         }
 
@@ -89,18 +89,18 @@ final class DiaryTile: BaseUIView {
 
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(categoryImageContainerView.snp.top).offset(2)
-            $0.left.equalTo(categoryImageContainerView.snp.right).offset(12)
-            $0.right.lessThanOrEqualTo(moneyLabel.snp.left).offset(-12)
+            $0.leading.equalTo(categoryImageContainerView.snp.trailing).offset(12)
+            $0.trailing.lessThanOrEqualTo(moneyLabel.snp.leading).offset(-12)
         }
 
         categoryLabel.snp.makeConstraints {
             $0.top.equalTo(descriptionLabel.snp.bottom).offset(4)
-            $0.left.equalTo(descriptionLabel)
+            $0.leading.equalTo(descriptionLabel)
         }
 
         moneyLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.right.equalToSuperview().inset(20)
+            $0.trailing.equalToSuperview().inset(20)
         }
     }
     

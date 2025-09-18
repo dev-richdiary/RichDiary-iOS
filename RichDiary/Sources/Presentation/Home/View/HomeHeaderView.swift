@@ -12,6 +12,12 @@ import Then
 
 final class HomeHeaderView: BaseUIView {
     
+    //MARK: - Properties
+    
+    var onTapNoticeButton: (() -> Void)?
+    var onTapHelpButton: (() -> Void)?
+    
+    
     //MARK: - UI Properties
     
     private let titleLabel = UILabel()
@@ -34,14 +40,14 @@ final class HomeHeaderView: BaseUIView {
         noticeButton.do {
             $0.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
             $0.tintColor = .white
-            $0.addTarget(self, action: #selector(onTapNoticeButton), for: .touchUpInside)
+            $0.addTarget(self, action: #selector(noticeButtonTapped), for: .touchUpInside)
             $0.accessibilityLabel = "알림"
         }
 
         helpButton.do {
             $0.setBackgroundImage(UIImage(systemName: "questionmark.circle"), for: .normal)
             $0.tintColor = .white
-            $0.addTarget(self, action: #selector(onTapHelpButton), for: .touchUpInside)
+            $0.addTarget(self, action: #selector(helpButtonTapped), for: .touchUpInside)
             $0.accessibilityLabel = "도움말"
         }
     }
@@ -68,12 +74,14 @@ final class HomeHeaderView: BaseUIView {
 
     //MARK: - Private Func
 
-    @objc private func onTapNoticeButton() {
+    @objc private func noticeButtonTapped() {
         print("알림 버튼 클릭")
+        onTapNoticeButton?()
     }
     
-    @objc private func onTapHelpButton() {
+    @objc private func helpButtonTapped() {
         print("도움말 버튼 클릭")
+        onTapHelpButton?()
     }
     
 }
