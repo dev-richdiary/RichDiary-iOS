@@ -51,20 +51,20 @@ final class HelpTypeDescriptionView: BaseUIView {
     
     override func setLayout() {
         headerView.snp.makeConstraints {
-            $0.top.left.right.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
             $0.height.equalTo(56)
         }
         
         typeLabel.snp.makeConstraints {
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
         }
         
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(headerView.snp.bottom).offset(20)
-            $0.left.equalToSuperview().offset(20)
-            $0.right.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().inset(20)
             $0.bottom.equalToSuperview().inset(20)
         }
     }
