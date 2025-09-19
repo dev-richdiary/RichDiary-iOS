@@ -81,18 +81,18 @@ final class AddDiaryViewController: BaseUIViewController {
         
         setKeyboardObserver()
         
+        self.hidesBottomBarWhenPushed = true
+        
         if let id = existingDiaryId {
             configureForEdit(diaryId: id) // 기존 일기 로드 및 UI에 반영
             setNavigationBar(for: .edit)
         } else {
             setNavigationBar(for: .add)
-            // 기본값 설정 (segmentedControl, datePicker 등)
-            diaryTypeSegmentedControl.selectedSegmentIndex = 0 // 지출 기본 선택
+            diaryTypeSegmentedControl.selectedSegmentIndex = 0
             paymentSegmentedControl.selectedSegmentIndex = 0
             expenseTypeSegmentedControl.selectedSegmentIndex = 0
-            diaryTypeDidChange(diaryTypeSegmentedControl) // 지출 유형 스택뷰 초기화
-            
-            // 메모 플레이스홀더 설정
+            diaryTypeDidChange(diaryTypeSegmentedControl)
+
             memoTextView.text = "메모를 입력하세요 (선택)"
             memoTextView.textColor = .lightGray
             memoCountLabel.text = "(0/400)"
@@ -261,7 +261,7 @@ extension AddDiaryViewController {
             let realm = try Realm()
             guard let diaryToEdit = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryId) else {
                 presentAlert(title: "오류", message: "수정할 일기 정보를 찾을 수 없습니다.")
-                dismiss(animated: true)
+                self.navigationController?.popViewController(animated: true)
                 return
             }
             
@@ -294,7 +294,7 @@ extension AddDiaryViewController {
         } catch {
             print("가계부 로드 중 에러 발생: \(error)")
             presentAlert(title: "오류", message: "가계부를 불러오는 데 실패했습니다.")
-            dismiss(animated: true)
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }
@@ -310,7 +310,7 @@ extension AddDiaryViewController {
     }
     
     @objc func didTapCancelButton() {
-        self.dismiss(animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func didTapSaveButton() {
@@ -357,7 +357,7 @@ extension AddDiaryViewController {
                     print("Realm에 가계부 저장 성공")
                 }
             }
-            self.dismiss(animated: true)
+            self.navigationController?.popViewController(animated: true)
         } catch {
             print("Realm 작업 중 에러 발생: \(error)")
             presentAlert(title: "오류", message: "가계부 저장/수정 중 오류가 발생했습니다.")

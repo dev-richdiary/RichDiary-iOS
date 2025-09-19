@@ -13,7 +13,7 @@ import Then
 protocol HomeSummaryViewDelegate: AnyObject {
     func didTapPreviousMonth()
     func didTapNextMonth()
-    func didTapCalendar()
+    func didTapSetGoal()
 }
 
 final class HomeSummaryView: BaseUIView {
@@ -29,7 +29,7 @@ final class HomeSummaryView: BaseUIView {
     private lazy var previousMonthButton = UIButton()
     private lazy var nextMonthButton = UIButton()
     
-    private lazy var calendarButton = UIButton()
+    private lazy var setGoalButton = UIButton()
     
     private let expenseLabel = UILabel()
     private let expenseValueLabel = UILabel()
@@ -44,7 +44,7 @@ final class HomeSummaryView: BaseUIView {
     //MARK: - Func
     
     override func setUI() {
-        self.addSubviews(monthLabel, previousMonthButton, nextMonthButton, calendarButton, expenseLabel, expenseValueLabel, incomeLabel, incomeValueLabel, progressView, progressLabel, goalLabel)
+        self.addSubviews(monthLabel, previousMonthButton, nextMonthButton, setGoalButton, expenseLabel, expenseValueLabel, incomeLabel, incomeValueLabel, progressView, progressLabel, goalLabel)
     }
     
     override func setStyle() {
@@ -66,11 +66,15 @@ final class HomeSummaryView: BaseUIView {
             $0.accessibilityLabel = "다음 달"
         }
         
-        calendarButton.do {
-            $0.setBackgroundImage(UIImage(systemName: "calendar.circle.fill"), for: .normal)
-            $0.tintColor = .black
-            $0.addTarget(self, action: #selector(onTapCalendarButton), for: .touchUpInside)
-            $0.accessibilityLabel = "달력 열기"
+        setGoalButton.do {
+            $0.setTitle("목표 금액 설정", for: .normal)
+            $0.setTitleColor(.white, for: .normal)
+            $0.titleLabel?.font = .richFont(.custom(fontWeight: .semiBold, size: 16))
+            $0.backgroundColor = .gray11
+            $0.layer.cornerRadius = 15
+            $0.clipsToBounds = true
+            $0.accessibilityLabel = "목표 지출 금액 설정"
+            $0.addTarget(self, action: #selector(onTapSetGoalButton), for: .touchUpInside)
         }
         
         expenseLabel.do {
@@ -125,10 +129,11 @@ final class HomeSummaryView: BaseUIView {
             $0.size.equalTo(20)
         }
         
-        calendarButton.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(20)
-            $0.trailing.equalToSuperview().inset(35)
-            $0.size.equalTo(52)
+        setGoalButton.snp.makeConstraints {
+            $0.centerY.equalTo(monthLabel)
+            $0.trailing.equalToSuperview().inset(25)
+            $0.height.equalTo(30)
+            $0.width.greaterThanOrEqualTo(120)
         }
         
         expenseLabel.snp.makeConstraints {
@@ -201,7 +206,7 @@ extension HomeSummaryView {
         delegate?.didTapNextMonth()
     }
     
-    @objc private func onTapCalendarButton() {
-        delegate?.didTapCalendar()
+    @objc private func onTapSetGoalButton() {
+        delegate?.didTapSetGoal()
     }
 }

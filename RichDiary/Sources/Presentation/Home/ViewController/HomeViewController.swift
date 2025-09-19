@@ -53,14 +53,14 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         headerView.do {
             $0.onTapHelpButton = { [weak self] in
                 let helpVC = HelpViewController()
-                self?.navigationItem.backButtonTitle = "홈"
+                helpVC.hidesBottomBarWhenPushed = true
                 self?.navigationController?.pushViewController(helpVC, animated: true)
             }
             
-//            $0.onTapNoticeButton = { [weak self] in
-//                let noticeVC = NoticeViewController()
-//                self?.navigationController?.pushViewController(noticeVC, animated: true)
-//            }
+            //            $0.onTapNoticeButton = { [weak self] in
+            //                let noticeVC = NoticeViewController()
+            //                self?.navigationController?.pushViewController(noticeVC, animated: true)
+            //            }
         }
         
         scrollview.do {
@@ -148,8 +148,11 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         updateUI(for: currentDate)
     }
     
-    func didTapCalendar() {
-        self.tabBarController?.selectedIndex = 1
+    func didTapSetGoal() {
+        let setGoalVC = GoalSettingViewController()
+        setGoalVC.hidesBottomBarWhenPushed = true
+        
+        self.navigationController?.pushViewController(setGoalVC, animated: true)
     }
     
 }
@@ -258,7 +261,7 @@ extension HomeViewController {
         // 지출/수입 계산
         let totalExpense = diariesForMonth.filter { $0.diaryType == .expense }.reduce(0) { $0 + $1.money }
         let totalIncome = diariesForMonth.filter { $0.diaryType == .income }.reduce(0) { $0 + $1.money }
-        let goal = 2_000_000 // TODO: - 목표 금액은 일단 고정, 추후 목표 금액 세팅 기능 구현 예정
+        let goal = UserDefaults.monthlyGoal
         
         summaryView.configure(date: date, expense: totalExpense, income: totalIncome, goal: goal)
         
