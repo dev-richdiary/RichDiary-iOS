@@ -76,7 +76,6 @@ final class GoalSettingViewController: BaseUIViewController {
             $0.backgroundColor = .gray5
             $0.layer.cornerRadius = 15
             $0.clipsToBounds = true
-            $0.addTarget(self, action: #selector(textFieldDidEndEditing), for: .valueChanged)
             $0.delegate = self
         }
         
