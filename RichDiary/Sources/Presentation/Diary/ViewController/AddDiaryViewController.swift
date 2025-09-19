@@ -81,6 +81,8 @@ final class AddDiaryViewController: BaseUIViewController {
         
         setKeyboardObserver()
         
+        self.hidesBottomBarWhenPushed = true
+        
         if let id = existingDiaryId {
             configureForEdit(diaryId: id) // 기존 일기 로드 및 UI에 반영
             setNavigationBar(for: .edit)

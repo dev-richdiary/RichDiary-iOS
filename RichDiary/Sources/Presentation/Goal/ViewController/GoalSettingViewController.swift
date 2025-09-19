@@ -38,6 +38,11 @@ final class GoalSettingViewController: BaseUIViewController {
         self.navigationController?.navigationBar.tintColor = .white
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.hidesBottomBarWhenPushed = true
+    }
     
     // MARK: - Override Func
     

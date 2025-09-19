@@ -53,7 +53,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
         headerView.do {
             $0.onTapHelpButton = { [weak self] in
                 let helpVC = HelpViewController()
-                self?.navigationItem.backButtonTitle = "홈"
+                helpVC.hidesBottomBarWhenPushed = true
                 self?.navigationController?.pushViewController(helpVC, animated: true)
             }
             
@@ -150,6 +150,8 @@ final class HomeViewController: BaseUIViewController, TabBarResettable, HomeSumm
     
     func didTapSetGoal() {
         let setGoalVC = GoalSettingViewController()
+        setGoalVC.hidesBottomBarWhenPushed = true
+        
         self.navigationController?.pushViewController(setGoalVC, animated: true)
     }
     

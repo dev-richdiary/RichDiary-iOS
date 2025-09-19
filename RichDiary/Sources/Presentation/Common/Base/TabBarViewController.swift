@@ -14,7 +14,7 @@ protocol TabBarResettable {
     func resetToInitialState()
 }
 
-class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
+class TabBarViewController: UITabBarController, UITabBarControllerDelegate, UINavigationControllerDelegate {
     
     // MARK: - UI Components
     
@@ -56,10 +56,10 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
     }
     
     private func setLayout() {
-        floatingButton.snp.makeConstraints { make in
-            make.size.equalTo(56)
-            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-            make.bottom.equalTo(self.tabBar.snp.top).offset(-16)
+        floatingButton.snp.makeConstraints {
+            $0.size.equalTo(56)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(60)
         }
     }
     
@@ -80,6 +80,10 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         homeNavigationController.tabBarItem = homeVC.tabBarItem
         calendarNavigationController.tabBarItem = calendarVC.tabBarItem
         
+        homeNavigationController.delegate = self // UINavigationControllerDelegate
+        calendarNavigationController.delegate = self // UINavigationControllerDelegate
+        
+        
         self.tabBar.tintColor = .gray11
         self.tabBar.unselectedItemTintColor = .lightGray
         self.tabBar.backgroundColor = .gray2
@@ -95,6 +99,18 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
            let resettableVC = navController.viewControllers.first as? TabBarResettable {
             resettableVC.resetToInitialState()
         }
+        
+        if let navController = viewController as? UINavigationController {
+             floatingButton.isHidden = navController.viewControllers.count > 1
+        }
+    }
+    
+    //MARK: - UINavigationControllerDelegate
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        let isRootViewController = navigationController.viewControllers.count == 1
+        
+        floatingButton.isHidden = !isRootViewController
     }
     
 }
@@ -105,6 +121,8 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
 extension TabBarViewController {
     @objc private func didTapFloatingButton() {
         let addDiaryViewController = AddDiaryViewController()
+        
+        addDiaryViewController.hidesBottomBarWhenPushed = true
                 
         guard let selectedNavController = self.selectedViewController as? UINavigationController else { return }
         selectedNavController.pushViewController(addDiaryViewController, animated: true)
