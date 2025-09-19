@@ -74,18 +74,25 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar"), selectedImage: UIImage(systemName: "calendar"))
         calendarVC.view.backgroundColor = .gray11
         
+        let homeNavigationController = UINavigationController(rootViewController: homeVC)
+        let calendarNavigationController = UINavigationController(rootViewController: calendarVC)
+        
+        homeNavigationController.tabBarItem = homeVC.tabBarItem
+        calendarNavigationController.tabBarItem = calendarVC.tabBarItem
+        
         self.tabBar.tintColor = .gray11
         self.tabBar.unselectedItemTintColor = .lightGray
         self.tabBar.backgroundColor = .gray2
         
-        viewControllers = [homeVC, calendarVC]
+        viewControllers = [homeNavigationController, calendarNavigationController]
     }
     
     
     //MARK: - Func
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        if let resettableVC = viewController as? TabBarResettable {
+        if let navController = viewController as? UINavigationController,
+           let resettableVC = navController.viewControllers.first as? TabBarResettable {
             resettableVC.resetToInitialState()
         }
     }
@@ -98,7 +105,8 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
 extension TabBarViewController {
     @objc private func didTapFloatingButton() {
         let addDiaryViewController = AddDiaryViewController()
-        let viewController = UINavigationController(rootViewController: addDiaryViewController)
-        self.present(viewController, animated: true)
+                
+        guard let selectedNavController = self.selectedViewController as? UINavigationController else { return }
+        selectedNavController.pushViewController(addDiaryViewController, animated: true)
     }
 }

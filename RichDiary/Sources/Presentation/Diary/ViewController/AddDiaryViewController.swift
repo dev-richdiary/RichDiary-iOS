@@ -259,7 +259,7 @@ extension AddDiaryViewController {
             let realm = try Realm()
             guard let diaryToEdit = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryId) else {
                 presentAlert(title: "오류", message: "수정할 일기 정보를 찾을 수 없습니다.")
-                dismiss(animated: true)
+                self.navigationController?.popViewController(animated: true)
                 return
             }
             
@@ -292,7 +292,7 @@ extension AddDiaryViewController {
         } catch {
             print("가계부 로드 중 에러 발생: \(error)")
             presentAlert(title: "오류", message: "가계부를 불러오는 데 실패했습니다.")
-            dismiss(animated: true)
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }
@@ -308,7 +308,7 @@ extension AddDiaryViewController {
     }
     
     @objc func didTapCancelButton() {
-        self.dismiss(animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func didTapSaveButton() {
@@ -355,7 +355,7 @@ extension AddDiaryViewController {
                     print("Realm에 가계부 저장 성공")
                 }
             }
-            self.dismiss(animated: true)
+            self.navigationController?.popViewController(animated: true)
         } catch {
             print("Realm 작업 중 에러 발생: \(error)")
             presentAlert(title: "오류", message: "가계부 저장/수정 중 오류가 발생했습니다.")

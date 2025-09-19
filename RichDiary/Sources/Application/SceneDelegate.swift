@@ -15,10 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let vc = TabBarViewController()
-        let navigationController = UINavigationController(rootViewController: vc) // 네비게이션 컨트롤러 추가
+//        let navigationController = UINavigationController(rootViewController: vc) // 네비게이션 컨트롤러 추가
         
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = navigationController
+        window.rootViewController = vc
         window.makeKeyAndVisible()
         self.window = window
     }
