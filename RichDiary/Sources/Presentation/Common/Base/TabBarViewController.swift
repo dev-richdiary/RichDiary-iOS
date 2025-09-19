@@ -17,12 +17,12 @@ protocol TabBarResettable {
 class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
     
     // MARK: - UI Components
-
+    
     private lazy var floatingButton = UIButton()
     
     
     // MARK: - Life Cycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,10 +31,10 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
         setStyle()
         setLayout()
     }
-
+    
     
     //MARK: - Private Func
-
+    
     private func setUI() {
         self.view.addSubview(floatingButton)
     }
@@ -83,7 +83,7 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
     
     
     //MARK: - Func
-
+    
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         if let resettableVC = viewController as? TabBarResettable {
             resettableVC.resetToInitialState()
@@ -97,8 +97,8 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate {
 
 extension TabBarViewController {
     @objc private func didTapFloatingButton() {
-         let addDiaryViewController = AddDiaryViewController()
-         let viewController = UINavigationController(rootViewController: addDiaryViewController)
-         self.present(viewController, animated: true)
+        let addDiaryViewController = AddDiaryViewController()
+        let viewController = UINavigationController(rootViewController: addDiaryViewController)
+        self.present(viewController, animated: true)
     }
 }

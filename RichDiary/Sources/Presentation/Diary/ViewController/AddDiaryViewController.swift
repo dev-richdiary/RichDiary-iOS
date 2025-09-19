@@ -86,13 +86,11 @@ final class AddDiaryViewController: BaseUIViewController {
             setNavigationBar(for: .edit)
         } else {
             setNavigationBar(for: .add)
-            // 기본값 설정 (segmentedControl, datePicker 등)
-            diaryTypeSegmentedControl.selectedSegmentIndex = 0 // 지출 기본 선택
+            diaryTypeSegmentedControl.selectedSegmentIndex = 0
             paymentSegmentedControl.selectedSegmentIndex = 0
             expenseTypeSegmentedControl.selectedSegmentIndex = 0
-            diaryTypeDidChange(diaryTypeSegmentedControl) // 지출 유형 스택뷰 초기화
-            
-            // 메모 플레이스홀더 설정
+            diaryTypeDidChange(diaryTypeSegmentedControl)
+
             memoTextView.text = "메모를 입력하세요 (선택)"
             memoTextView.textColor = .lightGray
             memoCountLabel.text = "(0/400)"

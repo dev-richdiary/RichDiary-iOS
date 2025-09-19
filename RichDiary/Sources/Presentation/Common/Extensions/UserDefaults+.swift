@@ -12,8 +12,7 @@ extension UserDefaults {
     
     static var monthlyGoal: Int {
         get {
-            // 기본값은 200만원 (2_000_000)
-            return standard.integer(forKey: monthlyGoalKey) == 0 ? 2_000_000 : standard.integer(forKey: monthlyGoalKey)
+            return standard.integer(forKey: monthlyGoalKey) 
         }
         set {
             standard.set(newValue, forKey: monthlyGoalKey)
