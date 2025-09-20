@@ -322,7 +322,11 @@ extension AddDiaryViewController {
     }
     
     @objc func didTapCancelButton() {
-        self.navigationController?.popViewController(animated: true)
+        if let _ = existingDiaryId {
+            dismiss(animated: true)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     @objc func didTapSaveButton() {
@@ -369,7 +373,16 @@ extension AddDiaryViewController {
                     print("Realm에 가계부 저장 성공")
                 }
             }
-            self.navigationController?.popViewController(animated: true)
+            
+            NotificationCenter.default.post(name: .diaryChanged, object: nil)
+
+            if let _ = existingDiaryId {
+                dismiss(animated: true)
+            } else {
+                self.navigationController?.popViewController(animated: true)
+            }
+
+            
         } catch {
             print("Realm 작업 중 에러 발생: \(error)")
             presentAlert(title: "오류", message: "가계부 저장/수정 중 오류가 발생했습니다.")
