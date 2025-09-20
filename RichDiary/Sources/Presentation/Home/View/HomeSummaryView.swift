@@ -9,27 +9,18 @@ import UIKit
 
 import SnapKit
 import Then
-
-protocol HomeSummaryViewDelegate: AnyObject {
-    func didTapPreviousMonth()
-    func didTapNextMonth()
-    func didTapSetGoal()
-}
+import RxSwift
+import RxCocoa
 
 final class HomeSummaryView: BaseUIView {
-    
-    //MARK: - Properties
-    
-    weak var delegate: HomeSummaryViewDelegate?
-    
     
     //MARK: - UI Properties
     
     private let monthLabel = UILabel()
-    private lazy var previousMonthButton = UIButton()
-    private lazy var nextMonthButton = UIButton()
+    private(set) lazy var previousMonthButton = UIButton()
+    private(set) lazy var nextMonthButton = UIButton()
     
-    private lazy var setGoalButton = UIButton()
+    private(set) lazy var setGoalButton = UIButton()
     
     private let expenseLabel = UILabel()
     private let expenseValueLabel = UILabel()
@@ -55,14 +46,12 @@ final class HomeSummaryView: BaseUIView {
         previousMonthButton.do {
             $0.setBackgroundImage(UIImage(systemName: "arrowtriangle.left.fill"), for: .normal)
             $0.tintColor = .black
-            $0.addTarget(self, action: #selector(onTapPreviousMonthButton), for: .touchUpInside)
             $0.accessibilityLabel = "이전 달"
         }
         
         nextMonthButton.do {
             $0.setBackgroundImage(UIImage(systemName: "arrowtriangle.right.fill"), for: .normal)
             $0.tintColor = .black
-            $0.addTarget(self, action: #selector(onTapNextMonthButton), for: .touchUpInside)
             $0.accessibilityLabel = "다음 달"
         }
         
@@ -74,7 +63,6 @@ final class HomeSummaryView: BaseUIView {
             $0.layer.cornerRadius = 15
             $0.clipsToBounds = true
             $0.accessibilityLabel = "목표 지출 금액 설정"
-            $0.addTarget(self, action: #selector(onTapSetGoalButton), for: .touchUpInside)
         }
         
         expenseLabel.do {
@@ -192,21 +180,4 @@ final class HomeSummaryView: BaseUIView {
         goalLabel.attributedText = .richStyle("목표 지출금액: \(goal.asCurrencyString)", style: .caption1)
     }
     
-}
-
-
-//MARK: - Private Func
-
-extension HomeSummaryView {
-    @objc private func onTapPreviousMonthButton() {
-        delegate?.didTapPreviousMonth()
-    }
-    
-    @objc private func onTapNextMonthButton() {
-        delegate?.didTapNextMonth()
-    }
-    
-    @objc private func onTapSetGoalButton() {
-        delegate?.didTapSetGoal()
-    }
 }
