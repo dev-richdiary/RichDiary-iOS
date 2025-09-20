@@ -322,7 +322,7 @@ extension AddDiaryViewController {
     }
     
     @objc func didTapCancelButton() {
-        if let _ = existingDiaryId {
+        if existingDiaryId != nil {
             dismiss(animated: true)
         } else {
             self.navigationController?.popViewController(animated: true)
@@ -376,7 +376,7 @@ extension AddDiaryViewController {
             
             NotificationCenter.default.post(name: .diaryChanged, object: nil)
 
-            if let _ = existingDiaryId {
+            if existingDiaryId != nil {
                 dismiss(animated: true)
             } else {
                 self.navigationController?.popViewController(animated: true)

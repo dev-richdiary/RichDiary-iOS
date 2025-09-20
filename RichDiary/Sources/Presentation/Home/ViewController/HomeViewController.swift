@@ -48,7 +48,6 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        scrollview.contentInsetAdjustmentBehavior = .never
         setBinding()
     }
     
