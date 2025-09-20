@@ -12,12 +12,6 @@ import Then
 
 final class CalendarHeaderView: BaseUIView {
     
-    //MARK: - Properties
-    
-    var onTapNoticeButton: (() -> Void)?
-    var onTapHelpButton: (() -> Void)?
-    
-    
     //MARK: - UI Properties
     
     private let titleLabel = UILabel()
