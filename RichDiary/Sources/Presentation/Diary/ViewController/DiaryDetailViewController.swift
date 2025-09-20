@@ -58,7 +58,13 @@ final class DiaryDetailViewController: BaseUIViewController {
         
         setGesture()
         loadDiaryAndConfigureUI()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDiarySavedNotification), name: .diaryChanged, object: nil)
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .diaryChanged, object: nil)
+    }
+    
     
     //MARK: - Func
     
@@ -298,6 +304,7 @@ extension DiaryDetailViewController {
                             realm.delete(objectToDelete)
                             print("Realm에서 가계부 삭제 성공 (ID: \(idToDelete))")
                         }
+                        NotificationCenter.default.post(name: .diaryChanged, object: nil)
                     } else {
                         print("삭제할 가계부를 찾을 수 없습니다. (ID: \(idToDelete)) 이미 삭제되었을 수 있습니다.")
                     }
@@ -323,7 +330,12 @@ extension DiaryDetailViewController {
         
         let editVC = AddDiaryViewController(existingDiaryId: diaryToEdit.diaryID)
         let navController = UINavigationController(rootViewController: editVC)
-                
+        navController.modalPresentationStyle = .fullScreen
+        
         self.present(navController, animated: true, completion: nil)
+    }
+    
+    @objc private func handleDiarySavedNotification() {
+        loadDiaryAndConfigureUI()
     }
 }
