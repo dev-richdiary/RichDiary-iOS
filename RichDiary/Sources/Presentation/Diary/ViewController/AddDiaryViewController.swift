@@ -76,6 +76,12 @@ final class AddDiaryViewController: BaseUIViewController {
     
     // MARK: - Life Cycle
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController?.navigationBar.tintColor = .systemBlue
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -97,6 +103,12 @@ final class AddDiaryViewController: BaseUIViewController {
             memoTextView.textColor = .lightGray
             memoCountLabel.text = "(0/400)"
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.navigationController?.navigationBar.tintColor = .white
     }
     
     deinit {

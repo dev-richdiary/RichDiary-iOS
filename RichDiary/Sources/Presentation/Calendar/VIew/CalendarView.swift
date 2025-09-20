@@ -22,7 +22,7 @@ final class CalendarView: BaseUIView {
     }
     
     let dayOfTheWeek = ["일", "월", "화", "수", "목", "금", "토"]
-    private var diaryList: Results<DiaryModel>?
+    private var diaryList: [DiaryModel]?
     
     private var currentDate = Date() {
         didSet { reloadCalendar() }
@@ -187,7 +187,7 @@ final class CalendarView: BaseUIView {
         }
     }
     
-    public func reloadData(with diaries: Results<DiaryModel>) {
+    public func reloadData(with diaries: [DiaryModel]) {
         self.diaryList = diaries
         prepareDiaryDates()
         reloadCalendar()

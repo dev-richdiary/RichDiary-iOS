@@ -12,17 +12,11 @@ import Then
 
 final class HomeHeaderView: BaseUIView {
     
-    //MARK: - Properties
-    
-    var onTapNoticeButton: (() -> Void)?
-    var onTapHelpButton: (() -> Void)?
-    
-    
     //MARK: - UI Properties
     
     private let titleLabel = UILabel()
-    private lazy var noticeButton = UIButton()
-    private lazy var helpButton = UIButton()
+    private(set) lazy var noticeButton = UIButton()
+    private(set) lazy var helpButton = UIButton()
     
     
     //MARK: - Func
@@ -40,14 +34,12 @@ final class HomeHeaderView: BaseUIView {
         noticeButton.do {
             $0.setBackgroundImage(UIImage(systemName: "bell"), for: .normal)
             $0.tintColor = .white
-            $0.addTarget(self, action: #selector(noticeButtonTapped), for: .touchUpInside)
             $0.accessibilityLabel = "알림"
         }
 
         helpButton.do {
             $0.setBackgroundImage(UIImage(systemName: "questionmark.circle"), for: .normal)
             $0.tintColor = .white
-            $0.addTarget(self, action: #selector(helpButtonTapped), for: .touchUpInside)
             $0.accessibilityLabel = "도움말"
         }
     }
@@ -64,24 +56,11 @@ final class HomeHeaderView: BaseUIView {
             $0.size.equalTo(28)
         }
         
-        noticeButton.snp.makeConstraints {
-            $0.trailing.equalTo(helpButton.snp.leading).offset(-14)
-            $0.centerY.equalToSuperview()
-            $0.size.equalTo(28)
-        }
-    }
-    
-
-    //MARK: - Private Func
-
-    @objc private func noticeButtonTapped() {
-        print("알림 버튼 클릭")
-        onTapNoticeButton?()
-    }
-    
-    @objc private func helpButtonTapped() {
-        print("도움말 버튼 클릭")
-        onTapHelpButton?()
+//        noticeButton.snp.makeConstraints {
+//            $0.trailing.equalTo(helpButton.snp.leading).offset(-14)
+//            $0.centerY.equalToSuperview()
+//            $0.size.equalTo(28)
+//        }
     }
     
 }

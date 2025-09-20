@@ -9,9 +9,11 @@ import PackageDescription
         // Default is .staticFramework
         // productTypes: ["Alamofire": .framework,]
         productTypes: [
-            "Realm": .framework,
             "RealmSwift": .framework,
-//            "RxRealm": .framework
+            "RxSwift": .framework,
+            "RxCocoa": .framework,
+            "RxRelay": .framework,
+            "RxCocoaRuntime": .framework
         ]
     )
 #endif

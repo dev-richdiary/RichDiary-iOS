@@ -9,13 +9,19 @@ import UIKit
 
 import SnapKit
 import Then
+
 import RealmSwift
+import RxSwift
+import RxCocoa
 
 final class CalendarViewController: BaseUIViewController, TabBarResettable {
     
     // MARK: - Properties
     
-    private var allDiaries: [DiaryModel] = []
+    private let allDiariesRelay = BehaviorRelay<[DiaryModel]>(value: [])
+    private let disposeBag = DisposeBag()
+    
+    private var notificationToken: RealmSwift.NotificationToken?
     
     
     // MARK: - UI Components
@@ -32,27 +38,21 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        fetchData()
+        setRealmNotification()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupCalendarViewHandlers()
+        setBinding()
+        setCalendarViewHandlers()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
-        // 모든 다이어리 데이터 배열 초기화
-        self.allDiaries = []
-        
-        // diaryStackView의 모든 서브뷰 제거 및 비우기
-        diaryStackView.arrangedSubviews.forEach {
-            diaryStackView.removeArrangedSubview($0)
-            $0.removeFromSuperview()
-        }
-        
+        notificationToken?.invalidate()
+        notificationToken = nil
     }
     
     
@@ -66,16 +66,23 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
     
     override func setStyle() {
         headerView.do {
-            $0.onTapHelpButton = { [weak self] in
-                let helpVC = HelpViewController()
-                self?.navigationItem.backButtonTitle = "캘린더"
-                self?.navigationController?.pushViewController(helpVC, animated: true)
-            }
+            $0.helpButton.rx.tap
+                .subscribe(onNext: { [weak self] in
+                    let helpVC = HelpViewController()
+                    helpVC.hidesBottomBarWhenPushed = true
+                    self?.navigationController?.pushViewController(helpVC, animated: true)
+                })
+                .disposed(by: disposeBag)
             
-//            $0.onTapNoticeButton = { [weak self] in
-//                let noticeVC = NoticeViewController()
-//                self?.navigationController?.pushViewController(noticeVC, animated: true)
-//            }
+            /*
+             $0.noticeButton.rx.tap
+             .subscribe(onNext: { [weak self] in
+             let noticeVC = NoticeViewController()
+             noticeVC.hidesBottomBarWhenPushed = true
+             self?.navigationController?.pushViewController(noticeVC, animated: true)
+             })
+             .disposed(by: disposeBag)
+             */
         }
         
         scrollview.do {
@@ -126,7 +133,7 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
         scrollview.setContentOffset(.zero, animated: true)
         
         calendarView.resetToToday()
-        updateDiaryTiles(for: calendarView.selectedDate)
+        loadAndRefreshDiaries()
     }
 }
 
@@ -134,80 +141,124 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
 //MARK: - Private Func
 
 extension CalendarViewController {
-    private func setupCalendarViewHandlers() {
-        calendarView.onDateSelected = { [weak self] date in
-            self?.updateDiaryTiles(for: date)
+    private func presentAlert(title: String, message: String, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+            completion?()
+        })
+        self.present(alert, animated: true)
+    }
+    
+    private func navigateToDiaryDetail(diaryID: ObjectId) {
+        do {
+            let realm = try Realm()
+            if let currentDiary = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryID) {
+                let detailVC = DiaryDetailViewController(diaryId: currentDiary.diaryID)
+                detailVC.modalPresentationStyle = .overFullScreen
+                detailVC.modalTransitionStyle = .crossDissolve
+                self.present(detailVC, animated: true)
+            } else {
+                print("오류: ID(\(diaryID))를 가진 가계부를 찾을 수 없습니다. 이미 삭제되었을 수 있습니다.")
+                presentAlert(title: "알림", message: "해당 가계부가 삭제되었거나 찾을 수 없습니다.") { [weak self] in
+                    self?.loadAndRefreshDiaries()
+                }
+            }
+        } catch {
+            print("Realm 조회 중 에러 발생: \(error)")
+            presentAlert(title: "오류", message: "데이터 로딩 중 문제가 발생했습니다.")
         }
     }
     
-    private func updateDiaryTiles(for date: Date?) {
-            // 기존 뷰 제거
-            diaryStackView.arrangedSubviews.forEach {
-                diaryStackView.removeArrangedSubview($0)
-                $0.removeFromSuperview()
+    private func setCalendarViewHandlers() {
+        calendarView.onDateSelected = { [weak self] date in
+            // calendarView의 selectedDate가 변경되면 allDiariesRelay의 최신 값을 가져와 updateDiaryTiles 호출
+            if let currentDiaries = self?.allDiariesRelay.value {
+                self?.updateDiaryTiles(for: date, allDiaries: currentDiaries)
             }
-
-            guard let selectedDate = date else {
-                // 날짜가 선택되지 않았다면 타일을 표시할 필요 없음
-                return
-            }
-            
-            let filteredDiaries = self.allDiaries.filter { diary in
-                Calendar.current.isDate(diary.date, inSameDayAs: selectedDate)
-            }
-            
-            let validFilteredDiaries = filteredDiaries.filter { !$0.isInvalidated }
-            
-            for model in validFilteredDiaries {
-                let tile = DiaryTile()
-                
-                tile.configure(with: model)
-                
-                tile.snp.makeConstraints {
-                    $0.height.equalTo(72)
-                }
-                
-                tile.onTap = { [weak self] diaryID in
-                    guard let self = self else { return }
-                    
-                    do {
-                        let realm = try Realm()
-                        if let liveDiary = realm.object(ofType: DiaryModel.self, forPrimaryKey: diaryID) {
-                            let detailVC = DiaryDetailViewController(diaryId: liveDiary.diaryID)
-                            detailVC.modalPresentationStyle = .overFullScreen
-                            detailVC.modalTransitionStyle = .crossDissolve
-                            self.present(detailVC, animated: true)
-                        } else {
-                            print("ID(\(diaryID)) 가계부를 찾을 수 없습니다. 이미 삭제되었을 수 있습니다.")
-                            let alert = UIAlertController(title: "알림", message: "해당 가계부가 삭제되었거나 찾을 수 없습니다.", preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
-                                self.fetchData()
-                            })
-                            self.present(alert, animated: true, completion: nil)
-                        }
-                    } catch {
-                        print("Realm 조회 중 에러 발생: \(error)")
-                        let alert = UIAlertController(title: "오류", message: "데이터 로딩 중 문제가 발생했습니다.", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                }
-                
-                diaryStackView.addArrangedSubview(tile)
-            }
+        }
+    }
+    
+    private func updateDiaryTiles(for date: Date?, allDiaries: [DiaryModel]) {
+        // 기존 뷰 제거
+        diaryStackView.arrangedSubviews.forEach {
+            diaryStackView.removeArrangedSubview($0)
+            $0.removeFromSuperview()
         }
         
-        // TODO: - 달 단위로 그때 그때 fetch 하는 게 성능상 좋을듯
-        private func fetchData() {
-            do {
-                let realm = try Realm()
-                let realmResults = realm.objects(DiaryModel.self)
-                self.allDiaries = Array(realmResults).sorted(by: { $1.date < $0.date })
-                
-                calendarView.reloadData(with: realmResults)
-                updateDiaryTiles(for: calendarView.selectedDate)
-            } catch {
-                print("Realm 데이터 로딩 중 에러 발생: \(error)")
-            }
+        guard let selectedDate = date else {
+            return
         }
+        
+        let filteredDiaries = allDiaries.filter { diary in
+            Calendar.current.isDate(diary.date, inSameDayAs: selectedDate)
+        }
+        
+        // 필터링된 유효한 다이어리들로 타일 생성
+        for model in filteredDiaries {
+            let tile = DiaryTile()
+            tile.configure(with: model)
+            
+            tile.snp.makeConstraints {
+                $0.height.equalTo(72)
+            }
+            
+            tile.onTap = { [weak self] diaryID in
+                self?.navigateToDiaryDetail(diaryID: diaryID)
+            }
+            
+            diaryStackView.addArrangedSubview(tile)
+        }
+    }
+    
+    private func loadAndRefreshDiaries() {
+        do {
+            let realm = try Realm()
+            let allDiaries = Array(realm.objects(DiaryModel.self)).filter { !$0.isInvalidated }
+            self.allDiariesRelay.accept(allDiaries.sorted(by: { $1.date < $0.date })) // 최신순 정렬
+        } catch {
+            print("Realm 데이터 로딩 중 에러 발생: \(error)")
+            self.allDiariesRelay.accept([]) // 에러 발생 시 빈 배열로 업데이트
+        }
+    }
+    
+    private func setRealmNotification() {
+        notificationToken?.invalidate()
+        notificationToken = nil
+        
+        do {
+            let realm = try Realm()
+            let realmResults = realm.objects(DiaryModel.self).sorted(byKeyPath: "date", ascending: false)
+            
+            notificationToken = realmResults.observe { [weak self] (changes: RealmCollectionChange) in
+                guard let self = self else { return }
+                
+                var currentValidDiaries: [DiaryModel] = []
+                
+                switch changes {
+                case .initial(let results):
+                    currentValidDiaries = Array(results).filter { !$0.isInvalidated }
+                case .update(let results, _, _, _):
+                    currentValidDiaries = Array(results).filter { !$0.isInvalidated }
+                case .error(let error):
+                    print("Realm Notification Error: \(error)")
+                    currentValidDiaries = []
+                }
+                
+                self.allDiariesRelay.accept(currentValidDiaries)
+            }
+        } catch {
+            print("Realm Notification 초기화 중 에러 발생: \(error)")
+            self.allDiariesRelay.accept([])
+        }
+    }
+    
+    private func setBinding() {
+        allDiariesRelay
+            .subscribe(onNext: { [weak self] diaries in
+                guard let self = self else { return }
+                self.calendarView.reloadData(with: diaries)
+                self.updateDiaryTiles(for: self.calendarView.selectedDate, allDiaries: diaries)
+            })
+            .disposed(by: disposeBag)
+    }
 }

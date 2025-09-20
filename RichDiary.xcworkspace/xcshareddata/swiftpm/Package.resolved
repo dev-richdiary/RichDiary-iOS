@@ -1,5 +1,5 @@
 {
-  "originHash" : "1c66a8ca9ad4bb5baa2aaafe91c8469eeda9596bf5893969b5e99acbfa0f2d0a",
+  "originHash" : "68f17c247a1e8111d2b833e0925b15fb36c5164b3466f034a39aa056c2021321",
   "pins" : [
     {
       "identity" : "realm-core",
@@ -20,30 +20,21 @@
       }
     },
     {
+      "identity" : "rxrealm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RxSwiftCommunity/RxRealm",
+      "state" : {
+        "revision" : "267cc8b587a5d5c74b57105050f9838cf20e2541",
+        "version" : "5.1.0"
+      }
+    },
+    {
       "identity" : "rxswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ReactiveX/RxSwift",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
       "state" : {
         "revision" : "5dd1907d64f0d36f158f61a466bab75067224893",
         "version" : "6.9.0"
-      }
-    },
-    {
-      "identity" : "snapkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SnapKit/SnapKit.git",
-      "state" : {
-        "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
-        "version" : "5.7.1"
-      }
-    },
-    {
-      "identity" : "then",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/devxoul/Then",
-      "state" : {
-        "revision" : "d41ef523faef0f911369f79c0b96815d9dbb6d7a",
-        "version" : "3.0.0"
       }
     }
   ],

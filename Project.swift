@@ -7,6 +7,7 @@ let project = Project(
             name: "RichDiary",
             destinations: [.iPhone],
             product: .app,
+            productName: "RichDiary",
             bundleId: "io.tuist.RichDiary",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(
@@ -44,8 +45,10 @@ let project = Project(
                 .external(name: "SnapKit", condition: .none),
                 .external(name: "Then", condition: .none),
                 .external(name: "RxSwift", condition: .none),
-                .external(name: "Realm", condition: .none),
-                .external(name: "RealmSwift", condition: .none)
+                .external(name: "RxCocoa", condition: .none),
+                .external(name: "RxRelay", condition: .none),
+                .external(name: "RealmSwift", condition: .none),
+                .external(name: "Realm", condition: .none)
             ]
         ),
     ]
