@@ -48,6 +48,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        scrollview.contentInsetAdjustmentBehavior = .never
         setBinding()
     }
     
@@ -92,6 +93,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
             $0.backgroundColor = .white
             $0.layer.cornerRadius = 40
             $0.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
+            $0.contentInsetAdjustmentBehavior = .never
         }
         
         separator.do {
