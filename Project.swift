@@ -2,6 +2,12 @@ import ProjectDescription
 
 let project = Project(
     name: "RichDiary",
+    settings: .settings(
+        base: ["DEVELOPMENT_TEAM": "586LZSS32L"],
+        debug: [:],
+        release: [:],
+        defaultSettings: .recommended
+    ),
     targets: [
         .target(
             name: "RichDiary",
