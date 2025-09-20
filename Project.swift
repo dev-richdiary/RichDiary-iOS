@@ -7,7 +7,7 @@ let project = Project(
             name: "RichDiary",
             destinations: [.iPhone],
             product: .app,
-            productName: "부자 가계부",
+            productName: "RichDiary",
             bundleId: "io.tuist.RichDiary",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(
