@@ -3,7 +3,11 @@ import ProjectDescription
 let project = Project(
     name: "RichDiary",
     settings: .settings(
-        base: ["DEVELOPMENT_TEAM": "586LZSS32L"],
+        base: [
+            "DEVELOPMENT_TEAM": "586LZSS32L",
+            "MARKETING_VERSION": "1.0.0",
+            "CURRENT_PROJECT_VERSION": "1",
+        ],
         debug: [:],
         release: [:],
         defaultSettings: .recommended
@@ -31,8 +35,9 @@ let project = Project(
                         ]
                     ],
                     "CFBundleIconName": "AppIcon",
-                    "CFBundleShortVersionString": "$(CFBundleShortVersionString)",
+                    "CFBundleShortVersionString": "$(MARKETING_VERSION)",
                     "CFBundleVersion": "$(CURRENT_PROJECT_VERSION)",
+                    "CFBundleDisplayName": "부자가계부",
                     "UIAppFonts": [
                         "Pretendard-Bold.otf",
                         "Pretendard-Medium.otf",
