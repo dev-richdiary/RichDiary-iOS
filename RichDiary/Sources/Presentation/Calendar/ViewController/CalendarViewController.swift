@@ -48,13 +48,6 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
         setCalendarViewHandlers()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        notificationToken?.invalidate()
-        notificationToken = nil
-    }
-    
     
     //MARK: - Func
     
@@ -260,5 +253,10 @@ extension CalendarViewController {
                 self.updateDiaryTiles(for: self.calendarView.selectedDate, allDiaries: diaries)
             })
             .disposed(by: disposeBag)
+    }
+    
+    @objc private func handleDiarySavedOrDeletedNotification() {
+        print("CalendarViewController: 일기 저장/삭제 알림 받음. 데이터 갱신 시작.")
+        loadAndRefreshDiaries()
     }
 }
