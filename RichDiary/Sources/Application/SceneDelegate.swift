@@ -14,13 +14,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let vc = TabBarViewController()
-//        let navigationController = UINavigationController(rootViewController: vc) // 네비게이션 컨트롤러 추가
-        
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = vc
+        window.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+        
+        let splashVC = SplashViewController()
+        window.rootViewController = splashVC
         window.makeKeyAndVisible()
+        
         self.window = window
+        
+        let rootVC = TabBarViewController()
+        
+        // 스플래시 화면 2초 노출
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.window?.rootViewController = rootVC
+        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

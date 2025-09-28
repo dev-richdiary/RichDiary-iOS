@@ -48,13 +48,6 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
         setCalendarViewHandlers()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        notificationToken?.invalidate()
-        notificationToken = nil
-    }
-    
     
     //MARK: - Func
     
@@ -261,4 +254,5 @@ extension CalendarViewController {
             })
             .disposed(by: disposeBag)
     }
+
 }
