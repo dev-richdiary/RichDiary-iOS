@@ -254,9 +254,5 @@ extension CalendarViewController {
             })
             .disposed(by: disposeBag)
     }
-    
-    @objc private func handleDiarySavedOrDeletedNotification() {
-        print("CalendarViewController: 일기 저장/삭제 알림 받음. 데이터 갱신 시작.")
-        loadAndRefreshDiaries()
-    }
+
 }
