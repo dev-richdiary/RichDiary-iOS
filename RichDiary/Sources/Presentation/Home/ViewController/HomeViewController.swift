@@ -143,7 +143,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     
     func resetToInitialState() {
         scrollview.setContentOffset(.zero, animated: true)
-        viewModel.currentDate.accept(Date())
+        viewModel.output.currentDate.accept(Date())
     }
 }
 
@@ -155,11 +155,11 @@ extension HomeViewController {
         
         // Input
         summaryView.previousMonthButton.rx.tap
-            .bind(to: viewModel.previousMonthTapped)
+            .bind(to: viewModel.input.previousMonthTapped)
             .disposed(by: disposeBag)
         
         summaryView.nextMonthButton.rx.tap
-            .bind(to: viewModel.nextMonthTapped)
+            .bind(to: viewModel.input.nextMonthTapped)
             .disposed(by: disposeBag)
         
         summaryView.setGoalButton.rx.tap
@@ -171,11 +171,11 @@ extension HomeViewController {
             .disposed(by: disposeBag)
         
         // Output
-        viewModel.monthlySummary
+        viewModel.output.monthlySummary
             .subscribe(onNext: { [weak self] summary in
                 guard let self else { return }
                 self.summaryView.configure(
-                    date: self.viewModel.currentDate.value,
+                    date: self.viewModel.output.currentDate.value,
                     expense: summary.expense,
                     income: summary.income,
                     goal: summary.goal
@@ -183,13 +183,13 @@ extension HomeViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel.groupedDiaries
+        viewModel.output.groupedDiaries
             .subscribe(onNext: { [weak self] grouped in
                 self?.updateDiaryTiles(grouped)
             })
             .disposed(by: disposeBag)
         
-        viewModel.isEmpty
+        viewModel.output.isEmpty
             .subscribe(onNext: { [weak self] empty in
                 self?.diaryStackView.isHidden = empty
                 self?.diaryEmptyView.isHidden = !empty
@@ -206,7 +206,7 @@ extension HomeViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel.alertMessage
+        viewModel.output.alertMessage
             .subscribe(onNext: { [weak self] title, msg in
                 self?.presentAlert(title: title, message: msg)
             })
@@ -261,7 +261,7 @@ extension HomeViewController {
             }
             
             guard let diariesForDate = grouped[date], !diariesForDate.isEmpty else {
-                viewModel.alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
+                viewModel.output.alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
                 continue
             }
             
