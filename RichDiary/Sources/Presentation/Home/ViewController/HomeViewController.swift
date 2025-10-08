@@ -43,7 +43,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     }
     
     
-    //MARK: - Override Func
+    // MARK: - Override Func
     
     override func setUI() {
         self.view.addSubviews(headerView, scrollview)
@@ -139,7 +139,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     }
     
     
-    //MARK: - Func
+    // MARK: - Func
     
     func resetToInitialState() {
         scrollview.setContentOffset(.zero, animated: true)
@@ -148,7 +148,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
 }
 
 
-//MARK: - Private Func
+// MARK: - Private Func
 
 extension HomeViewController {
     private func bind() {
@@ -261,7 +261,6 @@ extension HomeViewController {
             }
             
             guard let diariesForDate = grouped[date], !diariesForDate.isEmpty else {
-                viewModel.output.alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
                 continue
             }
             

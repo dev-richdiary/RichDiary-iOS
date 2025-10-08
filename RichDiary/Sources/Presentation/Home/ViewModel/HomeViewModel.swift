@@ -64,7 +64,7 @@ final class HomeViewModel {
 }
 
 
-//MARK: - Private Func
+// MARK: - Private Func
 
 extension HomeViewModel {
 
