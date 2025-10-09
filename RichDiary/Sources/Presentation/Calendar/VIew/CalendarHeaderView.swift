@@ -56,11 +56,6 @@ final class CalendarHeaderView: BaseUIView {
             $0.size.equalTo(28)
         }
         
-//        noticeButton.snp.makeConstraints {
-//            $0.trailing.equalTo(helpButton.snp.leading).offset(-14)
-//            $0.centerY.equalToSuperview()
-//            $0.size.equalTo(28)
-//        }
     }
     
 }
