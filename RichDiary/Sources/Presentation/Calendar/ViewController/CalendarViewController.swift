@@ -113,7 +113,7 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
 }
 
 
-//MARK: - Private Func
+// MARK: - Private Func
 
 extension CalendarViewController {
     private func presentAlert(title: String, message: String) {

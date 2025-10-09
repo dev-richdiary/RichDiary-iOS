@@ -189,7 +189,7 @@ extension CalendarViewModel {
 }
 
 
-//MARK: - ViewModelType
+// MARK: - ViewModelType
 
 extension CalendarViewModel {
     struct Input {
