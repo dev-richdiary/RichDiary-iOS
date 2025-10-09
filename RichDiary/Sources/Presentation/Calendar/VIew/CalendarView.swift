@@ -129,6 +129,9 @@ final class CalendarView: BaseUIView {
     }
     
     func bind(to viewModel: CalendarViewModel) {
+        // 중복 바인딩 방지
+        disposeBag = DisposeBag()
+        
         previousMonthButton.rx.tap
             .bind(to: viewModel.input.previousMonthButtonTapped)
             .disposed(by: disposeBag)
@@ -174,14 +177,6 @@ final class CalendarView: BaseUIView {
                 self?.calendarCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
-    }
-    
-    func updateMonthLabel(_ monthText: String) {
-        self.currentMonthText = monthText
-    }
-    
-    func updateYearLabel(_ yearText: String) {
-        self.currentYearText = yearText
     }
     
     
