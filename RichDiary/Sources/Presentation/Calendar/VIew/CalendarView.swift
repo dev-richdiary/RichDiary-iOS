@@ -9,50 +9,21 @@ import UIKit
 
 import SnapKit
 import Then
-import RealmSwift
+import RxSwift
+import RxCocoa
 
 final class CalendarView: BaseUIView {
     
     // MARK: - Properties
     
-    var onDateSelected: ((Date?) -> Void)? {
-        didSet {
-            onDateSelected?(self.selectedDate)
-        }
-    }
+    private var disposeBag = DisposeBag()
     
-    let dayOfTheWeek = ["일", "월", "화", "수", "목", "금", "토"]
-    private var diaryList: [DiaryModel]?
+    private var currentCalendarDayData: CalendarDayData = CalendarDayData(days: [], diaryDates: [])
+    private var currentSelectedDate: Date?
+    private var currentMonthText: String = ""
+    private var currentYearText: String = ""
     
-    private var currentDate = Date() {
-        didSet { reloadCalendar() }
-    }
-    private var days: [Date?] = []
-    private var diaryDates: Set<DateComponents> = []
-    
-    var selectedDate: Date? {
-        didSet {
-            onDateSelected?(selectedDate)
-            calendarCollectionView.reloadData()
-        }
-    }
-    
-    private let calendarManager = CalendarManager()
     private var calendarCollectionViewHeightConstraint: Constraint?
-    
-    private lazy var monthFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월"
-        return formatter
-    }()
-    
-    private lazy var yearFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yyyy"
-        return formatter
-    }()
     
     
     // MARK: - UI Components
@@ -65,21 +36,6 @@ final class CalendarView: BaseUIView {
     private lazy var calendarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     
-    // MARK: - init
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        self.selectedDate = self.currentDate
-        prepareDiaryDates()
-        reloadCalendar()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
     // MARK: - Func
     
     override func layoutSubviews() {
@@ -90,6 +46,7 @@ final class CalendarView: BaseUIView {
     override func setUI() {
         self.addSubviews(monthLabel, previousMonthButton, nextMonthButton, yearLabel, weekStackView, calendarCollectionView)
         
+        let dayOfTheWeek = ["일", "월", "화", "수", "목", "금", "토"]
         dayOfTheWeek.forEach {
             let label = UILabel()
             label.attributedText = .richStyle($0, style: .custom(fontWeight: .bold, size: 20))
@@ -101,27 +58,23 @@ final class CalendarView: BaseUIView {
     
     override func setStyle() {
         monthLabel.do {
-            let monthString = monthFormatter.string(from: currentDate)
-            $0.attributedText = .richStyle(monthString, style: .custom(fontWeight: .semiBold, size: 26))
+            $0.attributedText = .richStyle("", style: .custom(fontWeight: .semiBold, size: 26))
         }
         
         previousMonthButton.do {
             $0.setBackgroundImage(UIImage(systemName: "arrowtriangle.left.fill"), for: .normal)
             $0.tintColor = .black
-            $0.addTarget(self, action: #selector(onTapPreviousMonth), for: .touchUpInside)
             $0.accessibilityLabel = "이전 달"
         }
         
         nextMonthButton.do {
             $0.setBackgroundImage(UIImage(systemName: "arrowtriangle.right.fill"), for: .normal)
             $0.tintColor = .black
-            $0.addTarget(self, action: #selector(onTapNextMonth), for: .touchUpInside)
             $0.accessibilityLabel = "다음 달"
         }
         
         yearLabel.do {
-            let yearString = yearFormatter.string(from: currentDate)
-            $0.attributedText = .richStyle(yearString, style: .custom(fontWeight: .semiBold, size: 26))
+            $0.attributedText = .richStyle("", style: .custom(fontWeight: .semiBold, size: 26))
             $0.textColor = .black
         }
         
@@ -175,61 +128,71 @@ final class CalendarView: BaseUIView {
         }
     }
     
-    func resetToToday() {
-        let today = Date()
+    func bind(to viewModel: CalendarViewModel) {
+        previousMonthButton.rx.tap
+            .bind(to: viewModel.input.previousMonthButtonTapped)
+            .disposed(by: disposeBag)
         
-        // 선택된 날짜를 오늘로 변경
-        self.selectedDate = today
+        nextMonthButton.rx.tap
+            .bind(to: viewModel.input.nextMonthButtonTapped)
+            .disposed(by: disposeBag)
         
-        // 현재 달력이 오늘이 속한 달이 아니라면, 오늘이 속한 달로 변경
-        if !Calendar.current.isDate(currentDate, inSameDayAs: today) {
-            self.currentDate = today
-        }
+        calendarCollectionView.rx.itemSelected
+            .compactMap { [weak self] indexPath -> Date? in
+                guard let self = self,
+                      let date = self.currentCalendarDayData.days[indexPath.item] else { return nil }
+                return date
+            }
+            .bind(to: viewModel.input.dateCellTapped)
+            .disposed(by: disposeBag)
+        
+        viewModel.output.currentMonthText
+            .drive(onNext: { [weak self] monthString in
+                self?.currentMonthText = monthString
+                self?.monthLabel.attributedText = .richStyle(monthString, style: .custom(fontWeight: .semiBold, size: 26))
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.output.currentYearText
+            .drive(onNext: { [weak self] yearString in
+                self?.currentYearText = yearString
+                self?.yearLabel.attributedText = .richStyle(yearString, style: .custom(fontWeight: .semiBold, size: 26))
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.output.calendarDayData
+            .drive(onNext: { [weak self] calendarDayData in
+                self?.currentCalendarDayData = calendarDayData
+                self?.calendarCollectionView.reloadData()
+                self?.updateCollectionViewHeight()
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.output.selectedDate
+            .drive(onNext: { [weak self] date in
+                self?.currentSelectedDate = date
+                self?.calendarCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
     
-    public func reloadData(with diaries: [DiaryModel]) {
-        self.diaryList = diaries
-        prepareDiaryDates()
-        reloadCalendar()
+    func updateMonthLabel(_ monthText: String) {
+        self.currentMonthText = monthText
     }
+    
+    func updateYearLabel(_ yearText: String) {
+        self.currentYearText = yearText
+    }
+    
     
     // MARK: - Private Func
     
-    private func prepareDiaryDates() {
-        guard let diaryList = diaryList else {
-            diaryDates = []
-            return
-        }
-        
-        let calendar = Calendar.current
-        diaryDates = Set(diaryList.map { calendar.dateComponents([.year, .month, .day], from: $0.date) })
-    }
-    
-    private func reloadCalendar() {
-        let monthString = monthFormatter.string(from: currentDate)
-        monthLabel.attributedText = .richStyle(monthString, style: .custom(fontWeight: .semiBold, size: 26))
-        
-        let yearString = yearFormatter.string(from: currentDate)
-        yearLabel.attributedText = .richStyle(yearString, style: .custom(fontWeight: .semiBold, size: 26))
-        
-        days = calendarManager.daysInMonth(for: currentDate)
-        calendarCollectionView.reloadData()
-    }
-    
     private func updateCollectionViewHeight() {
+        calendarCollectionView.layoutIfNeeded()
         let height = calendarCollectionView.collectionViewLayout.collectionViewContentSize.height
         calendarCollectionViewHeightConstraint?.update(offset: height)
     }
     
-    @objc private func onTapPreviousMonth() {
-        selectedDate = nil
-        currentDate = calendarManager.previousMonth(from: currentDate)
-    }
-    
-    @objc private func onTapNextMonth() {
-        selectedDate = nil
-        currentDate = calendarManager.nextMonth(from: currentDate)
-    }
 }
 
 
@@ -237,7 +200,7 @@ final class CalendarView: BaseUIView {
 
 extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return days.count
+        return currentCalendarDayData.days.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -246,32 +209,22 @@ extension CalendarView: UICollectionViewDelegateFlowLayout, UICollectionViewData
         }
         
         let calendar = Calendar.current
-        let date = days[indexPath.item]
+        let date = currentCalendarDayData.days[indexPath.item]
         var hasDiary = false
         var isFutureDate = false
         
         if let date = date {
             let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
-            hasDiary = diaryDates.contains(dateComponents)
+            hasDiary = currentCalendarDayData.diaryDates.contains(dateComponents)
             
             if calendar.compare(date, to: Date(), toGranularity: .day) == .orderedDescending {
                 isFutureDate = true
             }
         }
         
-        cell.configure(date: date, selectedDate: self.selectedDate, calendar: calendar, hasDiary: hasDiary, isFuture: isFutureDate)
+        cell.configure(date: date, selectedDate: self.currentSelectedDate, calendar: calendar, hasDiary: hasDiary, isFuture: isFutureDate)
         
         return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let selectedDay = days[indexPath.item] else { return }
-        
-        if Calendar.current.compare(selectedDay, to: Date(), toGranularity: .day) == .orderedDescending {
-            return
-        }
-        
-        self.selectedDate = selectedDay
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

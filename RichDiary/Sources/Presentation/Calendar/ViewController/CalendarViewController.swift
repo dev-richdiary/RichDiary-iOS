@@ -45,7 +45,6 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
         super.viewDidLoad()
         
         bind()
-        setCalendarViewHandlers()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -109,8 +108,6 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
     
     func resetToInitialState() {
         scrollview.setContentOffset(.zero, animated: true)
-        
-        calendarView.resetToToday()
         viewModel.input.resetTapped.accept(())
     }
 }
@@ -125,13 +122,9 @@ extension CalendarViewController {
         self.present(alert, animated: true)
     }
     
-    private func setCalendarViewHandlers() {
-        calendarView.onDateSelected = { [weak self] date in
-            self?.viewModel.input.dateSelected.accept(date ?? Date())
-        }
-    }
-    
     private func bind() {
+        calendarView.bind(to: viewModel)
+        
         headerView.helpButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 let helpVC = HelpViewController()
@@ -140,22 +133,13 @@ extension CalendarViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel.output.allDiaries
-            .asDriver(onErrorJustReturn: [])
-            .drive(onNext: { [weak self] diaries in
-                self?.calendarView.reloadData(with: diaries)
-            })
-            .disposed(by: disposeBag)
-        
         viewModel.output.filteredDiaries
-            .asDriver(onErrorJustReturn: [])
             .drive(onNext: { [weak self] diaries in
                 self?.updateDiaryTiles(with: diaries)
             })
             .disposed(by: disposeBag)
         
         viewModel.output.alertMessage
-            .asDriver(onErrorJustReturn: ("", ""))
             .drive(onNext: { [weak self] title, message in
                 self?.presentAlert(title: title, message: message)
             })
