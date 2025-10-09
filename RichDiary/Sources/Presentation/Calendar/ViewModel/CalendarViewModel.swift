@@ -73,23 +73,37 @@ extension CalendarViewModel {
     
     private func bind(input: Input, output: Output) {
         
-        input.previousMonthButtonTapped
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
+        Observable.merge(
+            input.previousMonthButtonTapped.map { -1 },
+            input.nextMonthButtonTapped.map { 1 }
+        )
+        .subscribe(onNext: { monthOffset in
+            
+            let currentDate = output._currentCalendarDate.value
+            guard let newDate = Calendar.current.date(byAdding: .month, value: monthOffset, to: currentDate) else { return }
+            
+            output._currentCalendarDate.accept(newDate)
+            
+            let calendar = Calendar.current
+            let today = Date()
+            
+            // 현재 달인 경우: 오늘 날짜 선택
+            if calendar.isDate(newDate, equalTo: today, toGranularity: .month) {
+                output._selectedDate.accept(today)
+            } else if newDate < today {
+                // 과거 달인 경우: 해당 달의 1일 선택
+                if let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: newDate)) {
+                    output._selectedDate.accept(firstDayOfMonth)
+                } else {
+                    output._selectedDate.accept(nil)
+                }
+            } else {
+                // 미래 달인 경우: 선택된 날짜 없음
                 output._selectedDate.accept(nil)
-                let newDate = self.calendarManager.previousMonth(from: output._currentCalendarDate.value)
-                output._currentCalendarDate.accept(newDate)
-            })
-            .disposed(by: disposeBag)
-        
-        input.nextMonthButtonTapped
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
-                output._selectedDate.accept(nil)
-                let newDate = self.calendarManager.nextMonth(from: output._currentCalendarDate.value)
-                output._currentCalendarDate.accept(newDate)
-            })
-            .disposed(by: disposeBag)
+                output._filteredDiaries.accept([])
+            }
+        })
+        .disposed(by: disposeBag)
         
         input.dateCellTapped
             .distinctUntilChanged()
@@ -102,15 +116,36 @@ extension CalendarViewModel {
             })
             .disposed(by: disposeBag)
         
+        enum reloadCase {
+            case viewWillAppear
+            case resetTapped
+        }
+        
         Observable.merge(
-            input.viewWillAppear.asObservable(),
-            input.resetTapped.asObservable()
+            input.viewWillAppear.map { reloadCase.viewWillAppear },
+            input.resetTapped.map { reloadCase.resetTapped }
         )
-        .subscribe(onNext: { [weak self] _ in
+        .subscribe(onNext: { [weak self] event in
             guard let self = self else { return }
+            
             self.observeRealmChanges(allDiaries: output._allDiaries, alertMessage: output._alertMessage)
-            output._currentCalendarDate.accept(Date())
-            output._selectedDate.accept(Date())
+            
+            let today = Date()
+            
+            switch event {
+            case .viewWillAppear:
+                if !Calendar.current.isDate(output._currentCalendarDate.value, equalTo: today, toGranularity: .month) {
+                    output._currentCalendarDate.accept(today)
+                    output._selectedDate.accept(today)
+                } else {
+                    if output._selectedDate.value == nil {
+                        output._selectedDate.accept(today)
+                    }
+                }
+            case .resetTapped:
+                output._currentCalendarDate.accept(today)
+                output._selectedDate.accept(today)
+            }
         })
         .disposed(by: disposeBag)
         
