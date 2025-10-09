@@ -116,14 +116,14 @@ extension CalendarViewModel {
             })
             .disposed(by: disposeBag)
         
-        enum reloadCase {
+        enum ReloadCase {
             case viewWillAppear
             case resetTapped
         }
         
         Observable.merge(
-            input.viewWillAppear.map { reloadCase.viewWillAppear },
-            input.resetTapped.map { reloadCase.resetTapped }
+            input.viewWillAppear.map { ReloadCase.viewWillAppear },
+            input.resetTapped.map { ReloadCase.resetTapped }
         )
         .subscribe(onNext: { [weak self] event in
             guard let self = self else { return }
