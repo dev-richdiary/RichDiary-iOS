@@ -333,18 +333,18 @@ extension AddDiaryViewController {
         let money = diaryTextFieldView.amount
         let description = diaryTextFieldView.diaryDescription
         
-        // 금액이 0원일 경우 입력 방지 메세지
-        if money == 0 {
+        // 1. 유효성 검사 (Early Return 보장)
+        if money <= 0 {
             presentAlert(title: "알림", message: "금액을 입력해주세요.")
             return
         }
         
-        // 내용이 비어있을 경우 입력 방지 메세지
-        if description.isEmpty {
+        if description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             presentAlert(title: "알림", message: "내용을 입력해주세요.")
             return
         }
         
+        // 2. 데이터 가공
         let diaryType: DiaryType = diaryTypeSegmentedControl.selectedSegmentIndex == 0 ? .expense : .income
         let date = datePickerView.date
         let category = categorySelectView.selectedCategory ?? .etc
