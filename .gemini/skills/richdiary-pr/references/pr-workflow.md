@@ -1,15 +1,20 @@
-# PR Creation Workflow (Detailed Focus)
+# PR Creation Workflow (GitHub CLI Enhanced)
 
 Follow these steps when the user asks to "Make a PR" (`PR 만들어줘`):
 
-1. **Summarize Work (Deep Analysis)**: 
-   - Identify the base branch (default to `origin/develop`).
-   - Run `git log origin/develop..HEAD --oneline` to see the commit history.
-   - Run `git diff origin/develop..HEAD --stat` to see modified files.
-   - For major files, run `git diff origin/develop..HEAD [file_path]` to analyze logic changes.
-   - Summarize the work by categorizing changes (e.g., UI, Logic, Configuration, Data Layer).
-   - Provide as much detail as possible for each category.
-2. **Generate Template**: 
-   - Populate only the "작업한 내용" section of the template.
-   - Avoid adding Branch info, PR Points, Screenshots, or Issue Numbers.
-3. **Output**: Present the detailed work summary in the PR template format.
+1. **Summarize Work**: 
+   - Analyze changes compared to `origin/develop`.
+   - Categorize and detail the technical work done.
+2. **Extract Metadata**:
+   - **Type**: Determine the PR type (e.g., Setting, Feat, Refactor).
+   - **IssueNumber**: Extract from the current branch name.
+   - **Description**: Generate a concise summary for the title.
+3. **Generate PR Title**:
+   - Format: `[Type] #IssueNumber - Description`
+4. **Generate PR Body**: 
+   - Use `pr-template.md`.
+   - Ensure the `Closes #IssueNumber` line is correctly populated to auto-close issues on merge.
+5. **Execute/Prepare Command**:
+   - Prepare the command: `gh pr create --title "[Title]" --body "[Body]"`
+   - If `gh` is installed, ask the user: "Would you like me to execute this command to create the PR on GitHub?"
+   - If `gh` is missing, provide the full command for manual execution after installation.

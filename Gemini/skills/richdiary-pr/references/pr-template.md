@@ -6,3 +6,6 @@
 주요 코드 변경 사항이 있다면 여기에 작성하세요
 ```
 -->
+
+---
+**Related Issue**: Closes #{{IssueNumber}}
