@@ -67,6 +67,7 @@ let project = Project(
             destinations: [.iPhone],
             product: .unitTests,
             bundleId: "io.tuist.RichDiaryTests",
+            deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["RichDiaryTests/**"],
             resources: [],
