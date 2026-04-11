@@ -66,11 +66,11 @@ class TabBarViewController: UITabBarController, UITabBarControllerDelegate, UINa
     private func setTabBar() {
         self.delegate = self
         
-        let homeVC = HomeViewController()
+        let homeVC = AppDIContainer.shared.makeHomeViewController()
         homeVC.tabBarItem = UITabBarItem(title: "홈", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         homeVC.view.backgroundColor = .gray11
         
-        let calendarVC = CalendarViewController()
+        let calendarVC = AppDIContainer.shared.makeCalendarViewController()
         calendarVC.tabBarItem = UITabBarItem(title: "캘린더", image: UIImage(systemName: "calendar"), selectedImage: UIImage(systemName: "calendar"))
         calendarVC.view.backgroundColor = .gray11
         

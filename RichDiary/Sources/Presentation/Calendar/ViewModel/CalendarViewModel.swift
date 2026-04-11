@@ -6,8 +6,6 @@
 //
 
 import Foundation
-
-import RealmSwift
 import RxSwift
 import RxCocoa
 
@@ -18,14 +16,15 @@ final class CalendarViewModel: ViewModelType {
     let input: Input
     let output: Output
     
-    private var notificationToken: NotificationToken?
+    private let fetchDiariesUseCase: FetchDiariesUseCase
     private let disposeBag = DisposeBag()
     private let calendarManager = CalendarManager()
     
     
     // MARK: - init
     
-    init() {
+    init(fetchDiariesUseCase: FetchDiariesUseCase) {
+        self.fetchDiariesUseCase = fetchDiariesUseCase
         
         // Input
         let previousMonthButtonTapped = PublishRelay<Void>()
@@ -60,10 +59,6 @@ final class CalendarViewModel: ViewModelType {
         
         bind(input: self.input, output: self.output)
     }
-    
-    deinit {
-        notificationToken?.invalidate()
-    }
 }
 
 
@@ -87,18 +82,15 @@ extension CalendarViewModel {
             let calendar = Calendar.current
             let today = Date()
             
-            // 현재 달인 경우: 오늘 날짜 선택
             if calendar.isDate(newDate, equalTo: today, toGranularity: .month) {
                 output._selectedDate.accept(today)
             } else if newDate < today {
-                // 과거 달인 경우: 해당 달의 1일 선택
                 if let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: newDate)) {
                     output._selectedDate.accept(firstDayOfMonth)
                 } else {
                     output._selectedDate.accept(nil)
                 }
             } else {
-                // 미래 달인 경우: 선택된 날짜 없음
                 output._selectedDate.accept(nil)
                 output._filteredDiaries.accept([])
             }
@@ -127,9 +119,6 @@ extension CalendarViewModel {
         )
         .subscribe(onNext: { [weak self] event in
             guard let self = self else { return }
-            
-            self.observeRealmChanges(allDiaries: output._allDiaries, alertMessage: output._alertMessage)
-            
             let today = Date()
             
             switch event {
@@ -137,10 +126,8 @@ extension CalendarViewModel {
                 if !Calendar.current.isDate(output._currentCalendarDate.value, equalTo: today, toGranularity: .month) {
                     output._currentCalendarDate.accept(today)
                     output._selectedDate.accept(today)
-                } else {
-                    if output._selectedDate.value == nil {
-                        output._selectedDate.accept(today)
-                    }
+                } else if output._selectedDate.value == nil {
+                    output._selectedDate.accept(today)
                 }
             case .resetTapped:
                 output._currentCalendarDate.accept(today)
@@ -148,6 +135,15 @@ extension CalendarViewModel {
             }
         })
         .disposed(by: disposeBag)
+        
+        // UseCase를 통한 데이터 관찰
+        self.fetchDiariesUseCase.execute(date: Date()) // 초기 날짜 무관하게 전체 관찰 필요 시 Repository 수정 검토
+            .subscribe(onNext: { diaries in
+                output._allDiaries.accept(diaries)
+            }, onError: { error in
+                output._alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
+            })
+            .disposed(by: disposeBag)
         
         Observable.combineLatest(
             output._selectedDate.asObservable().compactMap { $0 },
@@ -158,33 +154,6 @@ extension CalendarViewModel {
         }
         .bind(to: output._filteredDiaries)
         .disposed(by: disposeBag)
-    }
-    
-    private func observeRealmChanges(allDiaries: BehaviorRelay<[DiaryModel]>, alertMessage: PublishRelay<(String, String)>) {
-        notificationToken?.invalidate()
-        
-        do {
-            let realm = try Realm()
-            let results = realm.objects(DiaryModel.self).sorted(byKeyPath: "date", ascending: false)
-            
-            notificationToken = results.observe { changes in
-                switch changes {
-                case .initial(let data), .update(let data, _, _, _):
-                    let validDiaries = Array(data).filter { !$0.isInvalidated }
-                    allDiaries.accept(validDiaries)
-                case .error(let error):
-                    print("Realm observe error:", error)
-                    alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
-                }
-            }
-        } catch {
-            alertMessage.accept(("오류", "데이터베이스 연결 실패: \(error.localizedDescription)"))
-        }
-    }
-    
-    func reloadAllData() {
-        self.observeRealmChanges(allDiaries: output._allDiaries, alertMessage: output._alertMessage)
-        output._selectedDate.accept(output._selectedDate.value)
     }
 }
 

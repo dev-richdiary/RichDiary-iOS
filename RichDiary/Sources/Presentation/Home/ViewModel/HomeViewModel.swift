@@ -6,8 +6,6 @@
 //
 
 import Foundation
-
-import RealmSwift
 import RxSwift
 import RxCocoa
 
@@ -18,13 +16,14 @@ final class HomeViewModel {
     let input: Input
     let output: Output
     
-    private var notificationToken: NotificationToken?
+    private let fetchDiariesUseCase: FetchDiariesUseCase
     private let disposeBag = DisposeBag()
     
     
     // MARK: - init
 
-    init() {
+    init(fetchDiariesUseCase: FetchDiariesUseCase) {
+        self.fetchDiariesUseCase = fetchDiariesUseCase
         
         // Input
         let previousMonthTapped = PublishRelay<Void>()
@@ -53,12 +52,6 @@ final class HomeViewModel {
         )
         
         bind(input: self.input, output: self.output)
-        observeRealmChanges(output: self.output)
-        loadAndRefreshDiaries(output: self.output)
-    }
-    
-    deinit {
-        notificationToken?.invalidate()
     }
     
 }
@@ -69,6 +62,7 @@ final class HomeViewModel {
 extension HomeViewModel {
 
     private func bind(input: Input, output: Output) {
+        // 월 변경 로직
         input.previousMonthTapped
             .withLatestFrom(output.currentDate)
             .map { Calendar.current.date(byAdding: .month, value: -1, to: $0) ?? $0 }
@@ -81,61 +75,35 @@ extension HomeViewModel {
             .bind(to: output.currentDate)
             .disposed(by: disposeBag)
         
+        // 날짜 변경 시 데이터 다시 가져오기
         output.currentDate
-            .subscribe(onNext: { [weak self] _ in
-                self?.loadAndRefreshDiaries(output: output)
+            .flatMapLatest { [weak self] date -> Observable<[DiaryModel]> in
+                guard let self = self else { return .empty() }
+                return self.fetchDiariesUseCase.execute(date: date)
+                    .catch { error in
+                        output.alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
+                        return .just([])
+                    }
+            }
+            .subscribe(onNext: { [weak self] diaries in
+                self?.updateUIState(output: output, with: diaries)
             })
             .disposed(by: disposeBag)
     }
     
-    private func observeRealmChanges(output: Output) {
-        do {
-            let realm = try Realm()
-            let results = realm.objects(DiaryModel.self).sorted(byKeyPath: "date", ascending: false)
-            
-            notificationToken = results.observe { [weak self] change in
-                guard let self = self else { return }
-                switch change {
-                case .initial(let data), .update(let data, _, _, _):
-                    self.updateUIState(output: output, with: Array(data))
-                case .error(let error):
-                    print("Realm observe error:", error)
-                    output.alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
-                }
-            }
-        } catch {
-            output.alertMessage.accept(("오류", "데이터베이스 연결 실패"))
-        }
-    }
-    
-    private func loadAndRefreshDiaries(output: Output) {
-        do {
-            let realm = try Realm()
-            let allDiaries = Array(realm.objects(DiaryModel.self).sorted(byKeyPath: "date", ascending: false))
-            updateUIState(output: output, with: allDiaries)
-        } catch {
-            output.alertMessage.accept(("오류", "데이터를 불러오지 못했습니다."))
-        }
-    }
-    
     private func updateUIState(output: Output, with diaries: [DiaryModel]) {
-        let date = output.currentDate.value
-        
-        // 월별 필터링
-        let filtered = diaries.filter { Calendar.current.isDate($0.date, equalTo: date, toGranularity: .month) }
-        
         // 지출/수입 계산
-        let expense = filtered.filter { $0.diaryType == .expense }.reduce(0) { $0 + $1.money }
-        let income = filtered.filter { $0.diaryType == .income }.reduce(0) { $0 + $1.money }
+        let expense = diaries.filter { $0.diaryType == .expense }.reduce(0) { $0 + $1.money }
+        let income = diaries.filter { $0.diaryType == .income }.reduce(0) { $0 + $1.money }
         let goal = UserDefaults.monthlyGoal
         
         output.monthlySummary.accept((expense, income, goal))
         
         // 날짜별 그룹화
-        let grouped = Dictionary(grouping: filtered) { Calendar.current.startOfDay(for: $0.date) }
+        let grouped = Dictionary(grouping: diaries) { Calendar.current.startOfDay(for: $0.date) }
         output.groupedDiaries.accept(grouped)
         
-        output.isEmpty.accept(filtered.isEmpty)
+        output.isEmpty.accept(diaries.isEmpty)
     }
 }
 

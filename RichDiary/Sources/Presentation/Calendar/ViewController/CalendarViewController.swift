@@ -9,8 +9,6 @@ import UIKit
 
 import SnapKit
 import Then
-
-import RealmSwift
 import RxSwift
 import RxCocoa
 
@@ -18,7 +16,7 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
     
     // MARK: - Properties
     
-    private let viewModel = CalendarViewModel()
+    private let viewModel: CalendarViewModel
     private let disposeBag = DisposeBag()
     
     
@@ -29,6 +27,18 @@ final class CalendarViewController: BaseUIViewController, TabBarResettable {
     private let headerView = CalendarHeaderView()
     private let calendarView = CalendarView()
     private let diaryStackView = UIStackView()
+    
+    
+    // MARK: - Init
+    
+    init(viewModel: CalendarViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     // MARK: - Life Cycle
@@ -193,6 +203,8 @@ extension CalendarViewController {
 
 extension CalendarViewController {
     @objc private func handleDiaryChangesNotification() {
-        viewModel.reloadAllData()
+        // viewModel.reloadAllData() 
+        // -> UseCase 스트림을 통해 자동 업데이트되므로 명시적 호출 불필요할 수 있음. 
+        // 필요 시 viewModel.input.viewWillAppear.accept(()) 등으로 대체 가능.
     }
 }

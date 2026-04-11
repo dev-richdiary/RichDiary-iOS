@@ -16,7 +16,7 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     
     // MARK: - Properties
     
-    private let viewModel = HomeViewModel()
+    private let viewModel: HomeViewModel
     private let disposeBag = DisposeBag()
     
     private var diaryStackViewBottomConstraint: Constraint?
@@ -32,6 +32,18 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
     private let separator = UIView()
     private let diaryStackView = UIStackView()
     private let diaryEmptyView = DiaryEmptyView()
+    
+    
+    // MARK: - Init
+    
+    init(viewModel: HomeViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     // MARK: - Life Cycle
@@ -60,16 +72,6 @@ final class HomeViewController: BaseUIViewController, TabBarResettable {
                     self?.navigationController?.pushViewController(helpVC, animated: true)
                 })
                 .disposed(by: disposeBag)
-            
-            /*
-             $0.noticeButton.rx.tap
-             .subscribe(onNext: { [weak self] in
-             let noticeVC = NoticeViewController()
-             noticeVC.hidesBottomBarWhenPushed = true
-             self?.navigationController?.pushViewController(noticeVC, animated: true)
-             })
-             .disposed(by: disposeBag)
-             */
         }
         
         scrollview.do {
