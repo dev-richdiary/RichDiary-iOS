@@ -63,8 +63,9 @@ This project uses **Tuist** to manage the Xcode workspace. Do not modify `.xcode
 ## AI Agent Guidance
 
 - **Core Skills**: 
-  - Use the `richdiary-standard` skill for all development tasks. It contains project-specific templates (ViewModel, ViewController, View) and coding standards (`references/coding-standard.md`).
+  - Use the `richdiary-standard` skill for all development tasks. It contains project-specific templates (ViewModel, ViewController, View) and coding standards.
   - Use the `richdiary-commit` skill when saving progress or wrapping up tasks to automatically generate standard-compliant commit messages and execute commits.
+  - Use the `richdiary-pr` skill when the user asks "PR 만들어줘" to generate a Pull Request body based on the branch history and the project's PR template.
 - **Standard Workflow**:
   1. Activate `richdiary-standard` skill.
   2. Reference `coding-standard.md` for architectural rules.
