@@ -1,11 +1,10 @@
-# Commit Workflow
+# Commit Workflow (Micro-commit Principle)
 
-Execute these steps in sequence using shell commands:
+**EVERY ATOMIC CHANGE MUST BE COMMITTED SEPARATELY.**
 
-1. **Analyze**: Run `git status`, `git diff`, and `git branch --show-current`.
-2. **Metadata**: Determine `[Type]`, `#IssueNumber`, and `Description`.
-3. **Stage**: Run `git add <files>` for relevant changes.
-4. **Commit**: Run `git commit -m "[Type] #IssueNumber - Description"`.
-5. **Verify**: Run `git status` to ensure a clean work tree.
+1. **Analyze**: `git status` & `git diff`. Ensure only ONE logical sub-task is modified.
+2. **Metadata**: Determine `[Type] #Issue - Description`.
+3. **Stage**: `git add <specific_file>`.
+4. **Commit**: `git commit -m "[Type] #Issue - Description"`.
 
-*Note: Do not push unless explicitly asked.*
+*Example: Creating one test file = one commit. Updating one protocol = one commit.*
