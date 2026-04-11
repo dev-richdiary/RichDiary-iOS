@@ -76,6 +76,8 @@ let project = Project(
                 .external(name: "RxSwift"),
                 .external(name: "RxTest"),
                 .external(name: "RxBlocking"),
+                .external(name: "RealmSwift"),
+                .external(name: "Realm")
             ]
         ),
     ]
