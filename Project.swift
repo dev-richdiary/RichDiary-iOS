@@ -62,5 +62,21 @@ let project = Project(
                 .external(name: "Realm", condition: .none)
             ]
         ),
+        .target(
+            name: "RichDiaryTests",
+            destinations: [.iPhone],
+            product: .unitTests,
+            bundleId: "io.tuist.RichDiaryTests",
+            deploymentTargets: .iOS("16.0"),
+            infoPlist: .default,
+            sources: ["RichDiaryTests/**"],
+            resources: [],
+            dependencies: [
+                .target(name: "RichDiary"),
+                .external(name: "RxSwift"),
+                .external(name: "RxTest"),
+                .external(name: "RxBlocking"),
+            ]
+        ),
     ]
 )
