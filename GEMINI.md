@@ -66,6 +66,8 @@ This project uses **Tuist** to manage the Xcode workspace. Do not modify `.xcode
   - Use the `richdiary-standard` skill for all development tasks. It contains project-specific templates (ViewModel, ViewController, View) and coding standards.
   - Use the `richdiary-commit` skill when saving progress or wrapping up tasks to automatically generate standard-compliant commit messages and execute commits.
   - Use the `richdiary-pr` skill when the user asks "PR 만들어줘" to generate a Pull Request body based on the branch history and the project's PR template.
+  - Use the `richdiary-concurrency` skill when implementing asynchronous tasks or Realm thread handling to ensure safety and Rx-Async interoperability.
+  - Use the `richdiary-api-design` skill when creating new interfaces or naming entities to follow Apple's API Design Guidelines.
 - **Standard Workflow**:
   1. Activate `richdiary-standard` skill.
   2. Reference `coding-standard.md` for architectural rules.
