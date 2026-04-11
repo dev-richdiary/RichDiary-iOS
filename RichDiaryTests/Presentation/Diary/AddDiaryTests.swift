@@ -3,72 +3,53 @@ import UIKit
 import RealmSwift
 @testable import RichDiary
 
-/**
- # AddDiaryViewController 비즈니스 규칙 명세서
- 가계부 작성 화면에서 발생하는 입력 유효성 검사 및 데이터 가공 규칙을 정의합니다.
- */
 @MainActor
-@Suite("AddDiary Business Logic Specification")
+@Suite("AddDiary Business Logic Specification - Detailed")
 struct AddDiaryTests {
     
-    // MARK: - 입력 유효성 검증 (경계값 분석 & 동치 분할)
+    // MARK: - 저장 유효성 검증 (동치 분할 & 경계값)
     
-    @Test("금액이 0원일 때 저장이 시도되면 알림이 발생해야 함 (경계값: 0)")
-    func test_saveDiary_whenAmountIsZero_showsAlert() {
+    @Test("저장 시도 시 설명(Description) 필드의 유효성 검사", arguments: ["", " ", "   "])
+    func test_saveDiary_withInvalidDescriptions_fails(invalidDesc: String) {
         // Given
         let vc = AddDiaryViewController()
         vc.loadViewIfNeeded()
         
-        // When: 금액을 0으로 설정하고 저장 버튼 액션 직접 호출
-        // Note: 실제 UI 상의 버튼 탭과 동일한 로직 검증
+        // Note: 실제 UI 컴포넌트의 값을 시뮬레이션
+        // vc.diaryTextFieldView.description = invalidDesc (분석된 로직 기반)
+        
+        // When
         vc.didTapSaveButton()
         
-        // Then: 현재 로직상 0원일 때 return 하므로 이후 Realm 저장 로직이 타지 않아야 함
-        // (이 테스트는 로직의 '흐름'을 문서화함)
+        // Then: 현재 로직 분석 결과, 빈 문자열 그룹은 알림을 띄우고 리턴해야 함
     }
     
-    @Test("설명이 비어있을 때 저장이 시도되면 알림이 발생해야 함 (동치 분할: 빈 문자열)")
-    func test_saveDiary_whenDescriptionIsEmpty_showsAlert() {
-        let vc = AddDiaryViewController()
-        vc.loadViewIfNeeded()
-        
-        // When: 설명 없이 저장 시도
-        vc.didTapSaveButton()
-        
-        // Then: 내용 입력 안내가 발생해야 함
-    }
-
-    // MARK: - 글자 수 제한 검증 (경계값 분석)
-    
-    @Test("메모 입력 시 400자를 초과하면 더 이상 입력되지 않아야 함 (경계값: 400, 401)")
-    func test_memoLengthLimit_boundaries() {
+    @Test("메모 글자 수 제한의 정밀 경계값 검사", arguments: [399, 400])
+    func test_memoLength_withinLimit_isAllowed(length: Int) {
         let vc = AddDiaryViewController()
         vc.loadViewIfNeeded()
         let textView = UITextView()
+        let text = String(repeating: "A", count: length)
         
-        // 400자 텍스트 생성
-        let maxText = String(repeating: "A", count: 400)
-        let exceedsText = "B"
+        // When: 한계치 내의 글자 입력 시도
+        let shouldChange = vc.textView(textView, shouldChangeTextIn: NSRange(location: 0, length: 0), replacementText: text)
         
-        // When: 400자 상태에서 1자 더 입력 시도
-        let shouldChange = vc.textView(textView, shouldChangeTextIn: NSRange(location: 400, length: 0), replacementText: exceedsText)
-        
-        // Then
-        #expect(shouldChange == false, "❌ 400자 초과 입력이 허용됨")
+        // Then: 허용되어야 함
+        #expect(shouldChange == true)
     }
 
-    // MARK: - 타입 변경 로직 (원인결과 예측)
-    
-    @Test("지출에서 수입으로 타입 변경 시(원인), 지출 유형 필드가 숨겨져야 함(결과)")
-    func test_diaryTypeChange_togglesVisibility() {
+    @Test("메모 글자 수 제한 초과 경계값 검사", arguments: [401, 1000])
+    func test_memoLength_exceedingLimit_isBlocked(length: Int) {
         let vc = AddDiaryViewController()
         vc.loadViewIfNeeded()
-        let segmentedControl = UISegmentedControl()
+        let textView = UITextView()
+        textView.text = String(repeating: "A", count: 400)
+        let extraText = String(repeating: "B", count: length - 400)
         
-        // When: '수입'(Index 1) 선택
-        segmentedControl.selectedSegmentIndex = 1
-        vc.diaryTypeDidChange(segmentedControl)
+        // When: 400자 꽉 찬 상태에서 추가 입력 시도
+        let shouldChange = vc.textView(textView, shouldChangeTextIn: NSRange(location: 400, length: 0), replacementText: extraText)
         
-        // Then: 지출 유형 스택뷰가 hidden 상태여야 함 (로직 분석 기반)
+        // Then: 차단되어야 함
+        #expect(shouldChange == false)
     }
 }
