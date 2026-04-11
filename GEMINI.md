@@ -69,7 +69,7 @@ This project uses **Tuist** to manage the Xcode workspace. Do not modify `.xcode
 - Use the `richdiary-concurrency` skill when implementing asynchronous tasks or Realm thread handling to ensure safety and Rx-Async interoperability.
 - Use the `richdiary-api-design` skill when creating new interfaces or naming entities to follow Apple's API Design Guidelines.
 - Use the `richdiary-testing` skill when writing unit tests for ViewModels, UseCases, or Repositories using RxTest and Mocking strategies.
-
+- Use the `richdiary-memory` skill to summarize and compress conversation history every 20 turns or upon request to maintain performance and save costs.
 - **Standard Workflow**:
   1. Activate `richdiary-standard` skill.
   2. Reference `coding-standard.md` for architectural rules.

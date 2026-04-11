@@ -1,30 +1,23 @@
 ---
 name: richdiary-pr
-description: Generates a Pull Request body based on the current branch's changes and the project's PR template. Triggers when the user says "PR 만들어줘" or asks to prepare a pull request.
+description: Generates a detailed Pull Request body focused solely on "Work Done" based on the current branch's changes. Triggers when the user says "PR 만들어줘".
 ---
 
-# PR Helper for RichDiary
+# PR Helper (Detailed Summary)
 
-This skill assists in creating high-quality Pull Requests by summarizing branch work and following the project's PR template.
+This skill creates a highly detailed summary of your work for a Pull Request, following a streamlined 1-person project template.
 
 ## Triggering Condition
-- The user asks: "PR 만들어줘" (Make a PR).
-- The user requests to summarize changes for a PR.
+- The user asks: "PR 만들어줘".
 
 ## Reference Materials
-- **Workflow**: [pr-workflow.md](references/pr-workflow.md) - Step-by-step PR generation.
-- **Template**: [pr-template.md](references/pr-template.md) - The standard PR body format.
+- **Workflow**: [pr-workflow.md](references/pr-workflow.md) - Deep analysis of changes.
+- **Template**: [pr-template.md](references/pr-template.md) - Simplified PR format.
 
 ## Core Tasks
-1. **Summarize Work**: Analyze `git log` and `git diff` against `main` to understand what was done.
-2. **Extract Metadata**:
-   - Current Branch: `git branch --show-current`.
-   - Issue Number: Extracted from branch name (e.g., `#47` from `feat/#47`).
-3. **Format PR**: 
-   - Use the [PR Template](references/pr-template.md).
-   - Summarize changes into logical bullet points.
-   - Mention key architectural or logic "PR Points".
-   - Include code snippets if requested or for major changes.
-4. **Output**: Display the complete PR content for the user to copy or use.
+1. **Analyze Commit History**: Use `git log` to see the work sequence.
+2. **Analyze Code Changes**: Use `git diff` with file paths to understand actual logic.
+3. **Draft Detailed Summary**: Categorize and expand on each logical change.
+4. **Format for PR**: Provide only the "작업한 내용" section with the detailed summary.
 
-*Note: The agent should always look at the current branch's commit history to generate the most accurate summary.*
+*Note: Skip metadata like branch name, issue numbers, PR points, or screenshots. Focus on the code changes.*
