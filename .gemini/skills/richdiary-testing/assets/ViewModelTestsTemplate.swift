@@ -15,8 +15,14 @@ final class {{Name}}ViewModelTests: XCTestCase {
         super.setUp()
         scheduler = TestScheduler(initialClock: 0)
         disposeBag = DisposeBag()
+        
+        // TODO: Initialize your Mock UseCases/Repositories here
         // mockUseCase = Mock{{Name}}UseCase()
+        
+        // Initialize ViewModel with dependencies
         // viewModel = {{Name}}ViewModel(useCase: mockUseCase)
+        
+        // Note: Ensure viewModel is not nil before running tests
     }
     
     override func tearDown() {

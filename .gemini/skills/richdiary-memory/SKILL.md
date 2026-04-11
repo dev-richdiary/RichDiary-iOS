@@ -19,7 +19,7 @@ This skill ensures optimal performance and cost efficiency by compressing long c
 
 ## Core Tasks
 1. **Engineering Status Summary**: Summarize Branch, Issues, Decisions, and Completed work.
-2. **Persistent Memory**: Use `save_memory` for project-wide facts.
+2. **Persistent Memory**: Use `save_memory` for project-wide facts. (CRITICAL: Always sanitize data by removing passwords, API tokens, or personal identifiers before saving).
 3. **Session Handoff**: Generate a prompt for the next session to restore context quickly.
 
 *Note: Focus on maintaining the "State" of the project, not the "Story" of the conversation.*

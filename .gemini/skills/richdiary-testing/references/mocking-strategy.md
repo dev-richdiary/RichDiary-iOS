@@ -9,12 +9,16 @@
 ```swift
 final class MockDiaryRepository: DiaryRepository {
     var diariesResult: Single<[DiaryModel]> = .just([])
+    var saveCalledCount = 0
+    var lastSavedDiary: DiaryModel?
     
     func fetchDiaries(byMonth date: Date) -> Single<[DiaryModel]> {
         return diariesResult
     }
     
     func saveDiary(_ diary: DiaryModel) -> Single<Void> {
+        saveCalledCount += 1
+        lastSavedDiary = diary
         return .just(())
     }
 }

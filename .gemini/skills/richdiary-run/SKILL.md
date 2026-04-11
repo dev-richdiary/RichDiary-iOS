@@ -15,7 +15,7 @@ This skill allows the agent to control the iOS Simulator and launch the RichDiar
 - **Config**: [simulator-config.md](references/simulator-config.md) - Target device and simctl commands.
 
 ## Core Tasks
-1.  **Identify Device**: Always prefer **iPhone 13 mini** (UDID: D4930C64-B3FC-40FE-A8E3-5954F5ED1D92).
+1.  **Identify Device**: Dynamically resolve the UDID for **iPhone 13 mini** using `simctl list`.
 2.  **Verify Build**: Ensure a fresh build is available in `DerivedData`.
 3.  **Boot & Launch**: Use `simctl` to boot the simulator, install the app, and launch it.
 4.  **Display**: Ensure the Simulator application is visible.

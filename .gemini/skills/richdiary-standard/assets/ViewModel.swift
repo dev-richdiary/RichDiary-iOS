@@ -15,14 +15,14 @@ final class {{Name}}ViewModel {
     
     init() {
         // 1. Initialize Relays
-        // let someRelay = PublishRelay<Void>()
+        let someRelay = PublishRelay<Void>()
         
         // 2. Initialize Input/Output
-        // self.input = Input(someAction: someRelay)
-        // self.output = Output(someData: BehaviorRelay(value: ""))
+        self.input = Input()
+        self.output = Output()
         
         // 3. Bind logic
-        // bind(input: self.input, output: self.output)
+        bind(input: self.input, output: self.output)
     }
     
     private func bind(input: Input, output: Output) {

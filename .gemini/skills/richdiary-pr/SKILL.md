@@ -18,6 +18,6 @@ This skill creates a highly detailed summary of your work for a Pull Request, fo
 1. **Analyze Commit History**: Use `git log` to see the work sequence.
 2. **Analyze Code Changes**: Use `git diff` with file paths to understand actual logic.
 3. **Draft Detailed Summary**: Categorize and expand on each logical change.
-4. **Format for PR**: Provide only the "작업한 내용" section with the detailed summary.
+4. **Format for PR**: Provide only the "작업한 내용" section with the detailed summary. (Note: Metadata like Branch name, Issue numbers, and PR Titles are handled automatically via the instructions in [pr-workflow.md](references/pr-workflow.md)).
 
 *Note: Skip metadata like branch name, issue numbers, PR points, or screenshots. Focus on the code changes.*

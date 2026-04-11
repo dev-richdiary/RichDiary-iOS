@@ -3,7 +3,10 @@
 ## Default Device
 - **Device Type**: iPhone 13 mini
 - **Target OS**: iOS 18.5 (Fallback to available version)
-- **UDID**: D4930C64-B3FC-40FE-A8E3-5954F5ED1D92
+
+## Dynamic UDID Discovery
+To find the UDID at runtime, use:
+`xcrun simctl list devices "iPhone 13 mini" | grep -v "unavailable" | grep -m 1 "iPhone 13 mini" | awk -F '[()]' '{print $2}'`
 
 ## Management Commands
 - **List Devices**: `xcrun simctl list devices`
